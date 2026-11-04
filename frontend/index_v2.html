@@ -1,1868 +1,912 @@
 <!DOCTYPE html>
-<html lang="gu" class="h-full">
+<html lang="gu">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NYAYMITRA-AI | AI-Powered Justice Access & Navigation</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            gold: {
-              300: '#FDE68A',
-              400: '#FCD34D',
-              500: '#F59E0B',
-              600: '#D97706',
-              primary: '#D4AF37',
-              dark: '#B8860B',
-            },
-            nyay: {
-              950: '#070C18',
-              900: '#0B132B',
-              850: '#0F1A36',
-              800: '#14213D',
-              700: '#1C2E52',
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    @keyframes pulse-gold {
-      0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); }
-      70% { box-shadow: 0 0 0 16px rgba(212, 175, 55, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
-    }
-    .pulse-gold-active {
-      animation: pulse-gold 1.8s infinite;
-    }
-    .gold-glow {
-      filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.45));
-    }
-    .blue-glow {
-      filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.35));
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #D4AF37;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#090f20">
+<title>NYAYMITRA-AI | Justice Access</title>
+<style>
+:root{
+  --bg:#080e1d;--panel:#111b30;--gold:#e5bd68;--gold2:#ffe4a0;
+  --text:#f5f1e8;--muted:#aab4c7;--line:rgba(229,189,104,.24);
+  --saffron:#ff9933;--green:#138808;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% 0,#1b2c4a,#080e1d 55%);
+ color:var(--text);font-family:system-ui,"Noto Sans Gujarati",sans-serif;min-height:100vh}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.screen{min-height:100vh;padding:24px;display:flex;align-items:center;justify-content:center}
+.brand{color:var(--gold2);font-weight:800;letter-spacing:1.5px}
+.subbrand{font-size:12px;color:var(--muted);line-height:1.6}
+.footer{text-align:center;padding:20px 10px;color:var(--gold2);font-size:13px}
+.footer small{display:block;color:var(--muted);margin-top:5px}
+.gold-btn{border:0;border-radius:12px;padding:13px 22px;color:#1b1720;
+ background:linear-gradient(135deg,#ffe6a2,#c99a43);font-weight:800;box-shadow:0 8px 25px #0005}
+.ghost-btn{border:1px solid var(--line);background:#ffffff08;color:var(--text);
+ border-radius:12px;padding:12px 18px}
+.card{background:linear-gradient(145deg,#17243aee,#0e1729ee);
+ border:1px solid var(--line);border-radius:20px;padding:22px;
+ box-shadow:0 18px 50px #0004}
+.muted{color:var(--muted)}
+/* FLAG SCREEN */
+#languageScreen{flex-direction:column;gap:25px;text-align:center;overflow:hidden}
+.flag-wrap{width:min(86vw,460px);height:245px;perspective:900px;position:relative;
+ filter:drop-shadow(0 20px 28px #0008)}
+.flag{position:absolute;inset:15px 0;overflow:hidden;border-radius:5px;
+ transform:rotateY(-9deg);box-shadow:0 8px 20px #0005;animation:wave 3.8s ease-in-out infinite;
+ background:linear-gradient(to bottom,#ff9933 0 33.33%,#fff 33.33% 66.66%,#138808 66.66%)}
+.flag:after{content:"";position:absolute;inset:0;
+ background:repeating-linear-gradient(90deg,#0000 0 18px,#0002 20px,#fff2 25px,#0000 34px);
+ animation:cloth 2.5s ease-in-out infinite alternate}
+.chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+ width:65px;height:65px;border:3px solid #183b8b;border-radius:50%;z-index:2;
+ background:repeating-conic-gradient(#183b8b 0deg 2deg,transparent 2deg 15deg)}
+.chakra:after{content:"";position:absolute;inset:22px;border:2px solid #183b8b;border-radius:50%;background:#fff}
+@keyframes wave{0%,100%{transform:rotateY(-9deg) skewY(0)}50%{transform:rotateY(9deg) skewY(1deg)}}
+@keyframes cloth{from{transform:translateX(-12px)}to{transform:translateX(12px)}}
+.language-box{width:min(100%,440px)}
+.language-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.lang-option{padding:15px 6px;border:1px solid var(--line);border-radius:13px;
+ background:#ffffff08;color:var(--text);font-weight:700}
+.lang-option.active{border-color:var(--gold);background:#d9ad5522;color:var(--gold2)}
+/* WELCOME */
+.welcome-box{width:min(100%,850px);text-align:center;padding:clamp(25px,6vw,60px)}
+.emblem{font-size:76px;margin:18px auto;filter:drop-shadow(0 8px 18px #d5a84b55)}
+.welcome-title{font-size:clamp(32px,7vw,58px);color:var(--gold2);margin:10px 0}
+.welcome-line{font-size:clamp(15px,3vw,20px);color:#d5dbea}
+/* APP */
+#appScreen{display:block;padding:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+ padding:16px clamp(15px,4vw,42px);border-bottom:1px solid var(--line);
+ background:#091222dd;position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+.topbar h2{margin:0;color:var(--gold2);font-size:20px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.container{width:min(1150px,94%);margin:35px auto}
+.hero{padding:30px 0 20px}
+.hero h1{font-size:clamp(26px,5vw,42px);color:var(--gold2);margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:17px;margin:22px 0}
+.feature{min-height:185px;transition:.2s}
+.feature:hover{transform:translateY(-4px);border-color:#e5bd6880}
+.feature .icon{font-size:35px}
+.feature h3{color:var(--gold2);margin:12px 0 7px}
+.feature p{color:var(--muted);font-size:14px;line-height:1.6}
+.section{margin-top:26px}
+.panel{background:#111b30;border:1px solid var(--line);border-radius:18px;padding:20px}
+.field{width:100%;background:#081222;color:white;border:1px solid var(--line);
+ border-radius:11px;padding:13px;margin:8px 0}
+textarea.field{min-height:100px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1}
+.result{background:#091426;border:1px solid #263653;border-radius:12px;
+ padding:13px;margin:10px 0;text-align:left}
+.result button{margin-top:8px}
+.library-layout{display:grid;grid-template-columns:230px 1fr;gap:15px}
+.list-item{display:block;width:100%;text-align:left;color:var(--text);background:#ffffff08;
+ border:1px solid #ffffff12;border-radius:10px;padding:11px;margin:6px 0}
+.list-item:hover{border-color:var(--gold)}
+.article-view{white-space:pre-wrap;line-height:1.8;color:#e8edf6}
+.notice{font-size:12px;color:#e7c98a;line-height:1.6;margin-top:16px}
+
+/* CENTRAL NOTIFICATION SETTINGS */
+.notification-panel{margin:22px 0;background:linear-gradient(145deg,#17243aee,#0e1729ee);border:1px solid var(--line);border-radius:18px;padding:20px}
+.notification-panel h2{color:var(--gold2);margin-top:0}
+.notification-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid #ffffff18}
+.notification-row:last-child{border-bottom:0}
+.notification-info{min-width:0}
+.notification-info strong{display:block;color:var(--text);margin-bottom:4px}
+.notification-info small{color:var(--muted);line-height:1.5}
+.notification-toggle{position:relative;flex:0 0 48px;width:48px;height:27px}
+.notification-toggle input{opacity:0;width:0;height:0}
+.notification-slider{position:absolute;inset:0;background:#526078;border-radius:30px;transition:.2s;cursor:pointer}
+.notification-slider:before{content:"";position:absolute;width:19px;height:19px;left:4px;top:4px;background:white;border-radius:50%;transition:.2s}
+.notification-toggle input:checked + .notification-slider{background:#b88b3e}
+.notification-toggle input:checked + .notification-slider:before{transform:translateX(21px)}
+.notification-toggle input:focus-visible + .notification-slider{outline:2px solid var(--gold2);outline-offset:3px}
+#notificationMessage{min-height:22px;margin:10px 0 0;color:var(--gold2);font-size:13px}
+
+@media(max-width:650px){
+ .screen{padding:16px}.flag-wrap{height:205px}
+ .library-layout{grid-template-columns:1fr}
+ .topbar{align-items:flex-start}.topbar h2{font-size:17px}
+ .container{margin:22px auto}
+}
+</style>
 </head>
-<body class="h-full bg-nyay-950 text-slate-100 flex flex-col font-sans selection:bg-gold-500 selection:text-slate-950">
+<body>
 
-  <!-- Subtle Sacred Geometric Background Pattern SVG Overlay -->
-  <div class="fixed inset-0 pointer-events-none opacity-[0.035] bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:24px_24px] z-0"></div>
-
-  <!-- Top Sticky Navigation Bar -->
-  <header class="bg-nyay-900/90 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40 shadow-xl">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        
-        <!-- Logo / Brand -->
-        <button id="navBrandBtn" type="button" class="flex items-center gap-3 text-left focus:outline-none group">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-gold-600 via-gold-500 to-amber-300 flex items-center justify-center text-slate-950 shadow-lg shadow-gold-500/20 group-hover:scale-105 transition-transform">
-            <i class="fa-solid fa-scale-balanced text-xl"></i>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-lg sm:text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-gold-400 to-amber-100">
-                NYAYMITRA<span class="text-white">-AI</span>
-              </span>
-              <span class="text-base">🇮🇳</span>
-            </div>
-            <p id="navSubBadge" class="text-[10px] sm:text-xs text-gold-400/80 font-medium tracking-wide">
-              AI-POWERED JUSTICE ACCESS & NAVIGATION
-            </p>
-          </div>
-        </button>
-
-        <!-- Right Side Nav Actions -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          
-          <!-- Current User Badge (When logged in) -->
-          <div id="navUserBadge" class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700/70 text-xs text-slate-300">
-            <i class="fa-solid fa-circle-user text-gold-400"></i>
-            <span id="navUserName">Welcome, Divyesh</span>
-          </div>
-
-          <!-- Language Selector Button (Opens Modal) -->
-          <button id="navLangBtn" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-medium border border-slate-700 flex items-center gap-1.5 transition-all" title="ભાષા બદલો / Select Language">
-            <i class="fa-solid fa-globe text-gold-400"></i>
-            <span id="currentLangLabel">ગુજરાતી</span>
-          </button>
-
-          <!-- Audio TTS Mute/Unmute Toggle -->
-          <button id="navTtsToggleBtn" type="button" class="p-2 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-gold-400 border border-slate-700 transition-colors" title="વાંચી સંભળાવો (Audio Speech Toggle)">
-            <i id="navTtsIcon" class="fa-solid fa-volume-high text-xs sm:text-sm text-gold-400"></i>
-          </button>
-
-          <!-- Home Button -->
-          <button id="navHomeBtn" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-medium border border-slate-700 flex items-center gap-1.5 transition-all">
-            <i class="fa-solid fa-house text-xs"></i>
-            <span id="navHomeText">મુખ્ય પૃષ્ઠ</span>
-          </button>
-
-        </div>
-      </div>
+<!-- SCREEN 1: FLAG + LANGUAGE -->
+<section id="languageScreen" class="screen">
+  <div class="brand">NYAYMITRA-AI</div>
+  <div class="flag-wrap" aria-label="Indian national flag">
+    <div class="flag"><div class="chakra"></div></div>
+  </div>
+  <div class="language-box card">
+    <h2 id="selectTitle">તમારી ભાષા પસંદ કરો</h2>
+    <p class="muted">Choose your preferred language</p>
+    <div class="language-options">
+      <button class="lang-option active" data-lang="gu">ગુજરાતી</button>
+      <button class="lang-option" data-lang="hi">हिन्दी</button>
+      <button class="lang-option" data-lang="en">English</button>
     </div>
+    <button class="gold-btn" id="continueBtn">આગળ વધો →</button>
+    <p class="notice">An independent student innovation. Not an official government portal.</p>
+  </div>
+  <footer class="footer">
+    🇮🇳 Created by Divyesh Bambhaniya
+    <small>⚖️ An Independent Student Innovation for Access to Justice in India</small>
+  </footer>
+</section>
 
-    <!-- Motivational Slogan Strip directly below nav -->
-    <div class="bg-gradient-to-r from-nyay-950 via-slate-900 to-nyay-950 border-t border-slate-800/60 py-1 px-4 text-center">
-      <p id="topMottoText" class="text-[11px] sm:text-xs font-semibold text-amber-300/90 tracking-wide flex items-center justify-center gap-2">
-        <i class="fa-solid fa-star text-gold-400 text-[10px]"></i>
-        <span>તમારો હક, તમારો અવાજ | ભારતભરમાં દરેક નાગરિક માટે સમાન, સત્વરે અને પારદર્શક ન્યાય</span>
-        <i class="fa-solid fa-star text-gold-400 text-[10px]"></i>
-      </p>
+<!-- SCREEN 2: ROYAL WELCOME -->
+<section id="welcomeScreen" class="screen hidden">
+  <div class="welcome-box card">
+    <div class="brand">A NEW WAY TO ACCESS JUSTICE</div>
+    <div class="emblem">⚖️ 📖</div>
+    <h1 class="welcome-title">NYAYMITRA-AI</h1>
+    <p class="welcome-line" id="welcomeTagline">તમારો અવાજ મહત્વનો છે, તમારા અધિકારો પણ.</p>
+    <p class="muted" id="welcomeDescription">તમારી ભાષામાં માહિતી મેળવો અને યોગ્ય સહાય સુધી પહોંચો.</p>
+    <div class="row" style="justify-content:center;margin-top:25px">
+      <button class="gold-btn" id="startBtn">Get Started →</button>
+      <button class="ghost-btn" id="welcomeLoginBtn">Demo Login</button>
+    </div>
+    <p class="notice">AI ન્યાય આપતું નથી. તે તમને માહિતી અને યોગ્ય માનવીય સહાય સુધી પહોંચવામાં મદદ કરે છે.</p>
+  </div>
+</section>
+
+<!-- SCREEN 3: DEMO PROFILE -->
+<section id="profileScreen" class="screen hidden">
+  <div class="card" style="width:min(100%,430px)">
+    <div class="brand">NYAYMITRA-AI</div>
+    <h2 id="profileTitle">તમારું સ્વાગત છે</h2>
+    <p class="muted" id="profileDesc">Demo માટે તમારું નામ લખો.</p>
+    <input id="profileName" class="field" placeholder="તમારું નામ / Your name" maxlength="50">
+    <button class="gold-btn" id="enterBtn">Continue to Dashboard →</button>
+    <button class="ghost-btn" id="backWelcomeBtn" style="margin-top:8px">← Back</button>
+    <p class="notice">આ Demo Profile છે, સુરક્ષિત account authentication નથી.</p>
+  </div>
+</section>
+
+<!-- SCREEN 4: DASHBOARD -->
+<section id="appScreen" class="hidden">
+  <header class="topbar">
+    <div><h2>⚖️ NYAYMITRA-AI</h2><small class="muted" id="helloUser">Justice Access Assistant</small></div>
+    <div class="top-actions">
+      <button class="ghost-btn" id="changeLangBtn">🌐 Language</button>
+      <button class="ghost-btn" id="homeBtn">Home</button>
     </div>
   </header>
-
-  <!-- Main View Container -->
-  <main class="flex-1 relative z-10 flex flex-col items-center justify-start p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-
-    <!-- ========================================== -->
-    <!-- SCREEN 1: LANDING HERO (Matches Image 1 & 2) -->
-    <!-- ========================================== -->
-    <div id="screenLanding" class="w-full max-w-4xl flex flex-col items-center text-center space-y-8 my-auto py-6">
-      
-      <!-- Top Pill Header (Matches Image 1) -->
-      <div class="inline-flex flex-col items-center px-6 py-2.5 rounded-2xl bg-slate-900/80 border border-slate-700/80 shadow-2xl backdrop-blur-md">
-        <div class="flex items-center gap-2">
-          <span class="text-xl sm:text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-gold-400 to-amber-100">
-            NYAYMITRA<span class="text-sky-400">-AI</span>
-          </span>
-          <span class="text-xl">🇮🇳</span>
-        </div>
-        <span class="text-[10px] sm:text-xs font-bold text-slate-400 tracking-wider mt-0.5">
-          AI-POWERED JUSTICE ACCESS & NAVIGATION
-        </span>
-      </div>
-
-      <!-- Main Headline & Subtitle -->
-      <div class="space-y-3 max-w-2xl px-2">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-          <span id="heroWelcomePrefix">Welcome to</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-amber-500">NYAYMITRA-AI</span>
-        </h1>
-        <p id="heroGujaratiHeadline" class="text-lg sm:text-xl font-bold text-amber-200/90 leading-snug">
-          તમારો અવાજ મહત્વનો છે, તમારા અધિકારો પણ.
-        </p>
-        <p id="heroDescription" class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl mx-auto">
-          ટેકનોલોજી જે દરેક સામાન્ય નાગરિકને કાનૂની માહિતી સમજવામાં અને યોગ્ય ન્યાય મેળવવાનો સાચો રસ્તો શોધવામાં મદદ કરે છે.
-        </p>
-      </div>
-
-      <!-- 3D Glowing Visuals Center (Scales of Justice & Constitution of India) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl px-4 py-2">
-        
-        <!-- Scales of Justice Card -->
-        <div class="bg-gradient-to-b from-slate-900/90 to-nyay-900/90 p-6 rounded-2xl border border-gold-500/30 shadow-2xl shadow-gold-500/10 flex flex-col items-center text-center relative overflow-hidden group hover:border-gold-500/60 transition-all">
-          <div class="w-20 h-20 rounded-full bg-gold-500/10 border border-gold-400/30 flex items-center justify-center text-gold-400 text-4xl mb-3 gold-glow group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-scale-balanced"></i>
-          </div>
-          <span id="scalesCardTitle" class="text-sm font-bold text-amber-200">ન્યાયિક સમાનતા અને રક્ષણ</span>
-          <p id="scalesCardSub" class="text-[11px] text-slate-400 mt-1">બંધારણ હેઠળ દરેક નાગરિકને સમાન અને નિષ્પક્ષ ન્યાયનો કાનૂની હક્ક છે.</p>
-        </div>
-
-        <!-- Constitution of India Card -->
-        <div class="bg-gradient-to-b from-slate-900/90 to-nyay-900/90 p-6 rounded-2xl border border-sky-500/30 shadow-2xl shadow-sky-500/10 flex flex-col items-center text-center relative overflow-hidden group hover:border-sky-500/60 transition-all">
-          <div class="w-20 h-20 rounded-full bg-sky-500/10 border border-sky-400/30 flex items-center justify-center text-sky-400 text-4xl mb-3 blue-glow group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-book-bookmark"></i>
-          </div>
-          <span id="constCardTitle" class="text-sm font-bold text-sky-200">ભારતનું સંવિધાન (Constitution)</span>
-          <p id="constCardSub" class="text-[11px] text-slate-400 mt-1">મૂળભૂત હક્કો અને કલમ 39A હેઠળ મફત કાનૂની સહાય મેળવવાનો અધિકાર.</p>
-        </div>
-
-      </div>
-
-      <!-- Action Buttons (Matches Image 1 & 2) -->
-      <div class="flex flex-wrap items-center justify-center gap-3 w-full max-w-md pt-2">
-        <button id="landingGetStartedBtn" type="button" class="flex-1 min-w-[140px] px-6 py-3 rounded-xl bg-gradient-to-r from-gold-400 via-gold-500 to-amber-500 hover:from-gold-300 hover:to-amber-400 text-slate-950 font-bold text-sm shadow-lg shadow-gold-500/25 active:scale-95 transition-all flex items-center justify-center gap-2">
-          <span>🚀</span>
-          <span id="btnTextGetStarted">શરૂ કરો (Get Started)</span>
-        </button>
-
-        <button id="landingSelectLangBtn" type="button" class="px-5 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
-          <span>🌐</span>
-          <span id="btnTextSelectLang">ભાષા પસંદ કરો</span>
-        </button>
-
-        <button id="landingDemoLoginBtn" type="button" class="px-5 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
-          <span>🔒</span>
-          <span id="btnTextDemoLogin">ડેમો પ્રવેશ (Demo Login)</span>
-        </button>
-      </div>
-
-      <!-- 3 Navigation Feature Cards (Matches Image 1 & Image 5) -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl pt-4">
-        
-        <!-- 1. Voice Assistant -->
-        <button type="button" class="quick-feature-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-gold-500/50 hover:bg-slate-900 text-left transition-all group focus:outline-none" data-action="voice">
-          <div class="w-12 h-12 rounded-xl bg-gold-500/10 text-gold-400 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-microphone-lines"></i>
-          </div>
-          <span class="text-xs font-bold text-gold-400 tracking-wider uppercase block" id="card1Badge">1. વોઇસ સહાયક</span>
-          <h3 class="text-sm font-bold text-white mt-0.5" id="card1Title">બોલીને પ્રશ્ન પૂછો</h3>
-          <p class="text-[11px] text-slate-400 mt-1 leading-relaxed" id="card1Desc">
-            ગુજરાતી, હિન્દી કે અંગ્રેજીમાં બોલીને તમારી મુશ્કેલી જણાવો અને તાત્કાલિક સલાહ મેળવો.
-          </p>
-        </button>
-
-        <!-- 2. Text Assistant -->
-        <button type="button" class="quick-feature-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 text-left transition-all group focus:outline-none" data-action="text">
-          <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </div>
-          <span class="text-xs font-bold text-sky-400 tracking-wider uppercase block" id="card2Badge">2. ટેક્સ્ટ સહાયક</span>
-          <h3 class="text-sm font-bold text-white mt-0.5" id="card2Title">લખીને માર્ગદર્શન મેળવો</h3>
-          <p class="text-[11px] text-slate-400 mt-1 leading-relaxed" id="card2Desc">
-            તમારી કાનૂની સમસ્યા ટાઈપ કરો અને સંબંધિત સરકારી કચેરી તથા પગલાં વિશે જાણો.
-          </p>
-        </button>
-
-        <!-- 3. Constitution Library -->
-        <button type="button" class="quick-feature-card p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-900 text-left transition-all group focus:outline-none" data-action="library">
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
-            <i class="fa-solid fa-book-open"></i>
-          </div>
-          <span class="text-xs font-bold text-emerald-400 tracking-wider uppercase block" id="card3Badge">3. બંધારણ લાઈબ્રેરી</span>
-          <h3 class="text-sm font-bold text-white mt-0.5" id="card3Title">ભારતીય સંવિધાન જાણો</h3>
-          <p class="text-[11px] text-slate-400 mt-1 leading-relaxed" id="card3Desc">
-            મૂળભૂત અધિકારો, કલમો અને કાનૂની સેવા સત્તા મંડળ (NALSA) ના નિયમો વાંચો.
-          </p>
-        </button>
-
-      </div>
-
-      <!-- Small Ethical Disclaimer -->
-      <p id="landingDisclaimer" class="text-[11px] text-slate-500 max-w-lg mx-auto">
-        AI ન્યાય આપતું નથી. તે તમને કાનૂની માહિતી અને યોગ્ય માનવીય સહાય સુધી પહોંચવામાં મદદ કરે છે.
-      </p>
-
+  <main class="container">
+    <div class="hero">
+      <div class="brand">YOUR RIGHTS. YOUR VOICE.</div>
+      <h1 id="dashboardTitle">તમારી મદદ માટે અમે અહીં છીએ.</h1>
+      <p class="muted" id="dashboardSub">માહિતી મેળવો, યોગ્ય સેવા શોધો અને આગળનું પગલું સમજો.</p>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SCREEN 2: MAIN DASHBOARD & WORKSPACE      -->
-    <!-- ========================================== -->
-    <div id="screenDashboard" class="hidden w-full max-w-6xl space-y-6 py-2">
-      
-      <!-- Dashboard Top Header Bar (Matches Image 5) -->
-      <div class="bg-gradient-to-r from-nyay-900 via-slate-900 to-nyay-900 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-2xl relative overflow-hidden">
-        <div class="relative z-10 max-w-2xl space-y-2">
-          <span id="dashEyebrow" class="text-xs font-black tracking-widest text-gold-400 uppercase">
-            તમારો હક. તમારો અવાજ. (YOUR RIGHTS. YOUR VOICE.)
-          </span>
-          <h2 id="dashTitle" class="text-2xl sm:text-3xl font-extrabold text-white">
-            અમે તમારી સહાય માટે અહીં છીએ. (We are here to help.)
-          </h2>
-          <p id="dashSub" class="text-xs sm:text-sm text-slate-300">
-            કાનૂની માહિતી શોધો, યોગ્ય સરકારી કચેરી ઓળખો અને આગળના પગલાં સરળતાથી સમજો.
-          </p>
-        </div>
-
-        <div class="mt-6 flex flex-wrap gap-2 border-t border-slate-800/80 pt-4">
-          <button id="dashTabAssistant" type="button" class="dash-tab-btn px-4 py-2 rounded-xl bg-gold-500 text-slate-950 font-bold text-xs sm:text-sm shadow-md flex items-center gap-2 transition-all">
-            <i class="fa-solid fa-microphone-lines"></i>
-            <span id="tabTextAssistant">વોઇસ & ટેક્સ્ટ સહાયક</span>
-          </button>
-          <button id="dashTabDrafter" type="button" class="dash-tab-btn px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-semibold text-xs sm:text-sm flex items-center gap-2 transition-all">
-            <i class="fa-solid fa-file-signature text-gold-400"></i>
-            <span id="tabTextDrafter">અરજી ડ્રાફ્ટર</span>
-          </button>
-          <button id="dashTabLibrary" type="button" class="dash-tab-btn px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-semibold text-xs sm:text-sm flex items-center gap-2 transition-all">
-            <i class="fa-solid fa-book-bookmark text-sky-400"></i>
-            <span id="tabTextLibrary">બંધારણ લાઈબ્રેરી</span>
-          </button>
-          <button id="dashTabPortals" type="button" class="dash-tab-btn px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-semibold text-xs sm:text-sm flex items-center gap-2 transition-all">
-            <i class="fa-solid fa-landmark text-emerald-400"></i>
-            <span id="tabTextPortals">સરકારી પોર્ટલ્સ & હેલ્પલાઇન</span>
-          </button>
-        </div>
+    <div class="grid">
+      <div class="card feature">
+        <div class="icon">🎙️</div><h3 id="voiceTitle">Voice Assistant</h3>
+        <p id="voiceDesc">તમારો પ્રશ્ન બોલીને પૂછો.</p>
+        <button class="gold-btn" id="openVoiceBtn">Open Voice</button>
       </div>
-
-      <!-- SECTION 2A: VOICE & TEXT ASSISTANT -->
-      <div id="dashSectionAssistant" class="dash-section space-y-6">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          <!-- Left 2 Cols: Voice Mic + Query Input + Results -->
-          <div class="lg:col-span-2 space-y-5">
-            
-            <!-- Voice Center Panel -->
-            <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center gap-6">
-              <div class="relative flex-shrink-0">
-                <div id="dashMicRing" class="hidden absolute -inset-2 rounded-full bg-gold-400/30 pulse-gold-active"></div>
-                <button id="dashMicBtn" type="button" class="w-16 h-16 rounded-full bg-gradient-to-tr from-gold-600 to-amber-400 hover:from-gold-500 hover:to-amber-300 text-slate-950 flex items-center justify-center text-2xl shadow-lg shadow-gold-500/30 active:scale-95 transition-all focus:outline-none" title="અવાજથી બોલો">
-                  <i id="dashMicIcon" class="fa-solid fa-microphone"></i>
-                </button>
-              </div>
-
-              <div class="text-center sm:text-left space-y-1">
-                <span id="dashMicState" class="text-sm font-bold text-white block">માઇક્રોફોન બટન દબાવો અને બોલો</span>
-                <p id="dashMicSub" class="text-xs text-slate-400">
-                  ગુજરાતી, હિન્દી કે અંગ્રેજીમાં બોલી શકો છો (Web Speech API).
-                </p>
-              </div>
-            </div>
-
-            <!-- Query Input Box -->
-            <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-3">
-              <label for="dashQueryInput" id="dashQueryLabel" class="block text-xs font-bold uppercase tracking-wider text-gold-400">
-                તમારી મુશ્કેલી અહીં લખો અથવા ઉપર માઇકથી બોલો:
-              </label>
-              
-              <div class="relative">
-                <textarea id="dashQueryInput" rows="3" class="w-full p-3.5 bg-nyay-950/90 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none transition-all" placeholder="દા.ત. મારા ખાતામાંથી 15,000 રૂપિયા કપાઈ ગયા છે, હવે મારે શું કરવું જોઈએ?"></textarea>
-              </div>
-
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-                <button id="dashClearInputBtn" type="button" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded hover:bg-slate-800 transition-colors">
-                  <i class="fa-solid fa-arrow-rotate-left mr-1"></i> સાફ કરો (Clear)
-                </button>
-                <button id="dashSubmitBtn" type="button" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-amber-500 hover:from-gold-300 hover:to-amber-400 text-slate-950 font-bold text-xs sm:text-sm shadow-md active:scale-95 transition-all flex items-center gap-2">
-                  <span id="dashSubmitText">માર્ગદર્શન મેળવો</span>
-                  <i class="fa-solid fa-arrow-right text-xs"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- Loading Spinner -->
-            <div id="dashAiLoading" class="hidden bg-slate-900/90 border border-slate-800 p-8 rounded-2xl text-center space-y-3">
-              <div class="inline-block animate-spin text-gold-400 text-3xl">
-                <i class="fa-solid fa-circle-notch"></i>
-              </div>
-              <p id="dashLoadingText" class="text-xs sm:text-sm font-semibold text-slate-300">
-                NYAYMITRA કાયદાકીય અને સરકારી સેવાઓ તપાસી રહ્યું છે...
-              </p>
-            </div>
-
-            <!-- Analysis Result Card -->
-            <div id="dashResultCard" class="hidden bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden">
-              
-              <!-- Result Header -->
-              <div class="bg-slate-800/80 px-5 py-3.5 border-b border-slate-700 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-gold-400 animate-pulse"></span>
-                  <span id="resBadgeCategory" class="text-xs font-bold uppercase tracking-wider text-gold-300">
-                    સાયબર સુરક્ષા અને નાણાકીય છેતરપિંડી
-                  </span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <button id="resSpeakBtn" type="button" class="px-3 py-1 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors">
-                    <i class="fa-solid fa-volume-high text-gold-400"></i>
-                    <span id="resSpeakText">સાંભળો</span>
-                  </button>
-                  <button id="resCopyBtn" type="button" class="px-3 py-1 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors">
-                    <i class="fa-regular fa-copy"></i>
-                    <span>કોપી</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Result Body -->
-              <div class="p-6 space-y-5">
-                
-                <div>
-                  <h4 id="labelResultSummary" class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">સરળ સારાંશ (Summary)</h4>
-                  <p id="resSummaryText" class="text-sm text-slate-200 leading-relaxed font-normal">
-                    તમારી સાથે નાણાકીય છેતરપિંડી થઈ છે. શરૂઆતના ગોલ્ડન અવર્સમાં તાત્કાલિક પગલાં લેવા જરૂરી છે.
-                  </p>
-                </div>
-
-                <div>
-                  <h4 id="labelResultSteps" class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">તાત્કાલિક લેવાના પગલાં (Action Steps)</h4>
-                  <ol id="resStepsList" class="space-y-2 text-xs sm:text-sm text-slate-300 list-decimal list-inside"></ol>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-nyay-950/70 p-4 rounded-xl border border-slate-800">
-                  <div>
-                    <span id="labelResultAuth" class="text-[11px] text-slate-400 block font-medium">સંબંધિત કચેરી:</span>
-                    <span id="resAuthorityText" class="text-xs sm:text-sm font-bold text-amber-200 block mt-0.5">નેશનલ સાયબર ક્રાઈમ પોર્ટલ</span>
-                  </div>
-                  <div>
-                    <span id="labelResultHelp" class="text-[11px] text-slate-400 block font-medium">તાકીદ હેલ્પલાઇન:</span>
-                    <span id="resHelplineText" class="text-xs sm:text-sm font-black text-emerald-400 block mt-0.5">1930</span>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 id="labelResultDocs" class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">જરૂરી પુરાવા / દસ્તાવેજો</h4>
-                  <ul id="resDocsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300"></ul>
-                </div>
-
-                <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
-                  <button id="resSendToDrafterBtn" type="button" class="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all">
-                    <i class="fa-solid fa-file-pen"></i>
-                    <span id="btnTextGenerateDraft">આ કેસ માટે અરજી તૈયાર કરો</span>
-                  </button>
-                  <a id="resPortalAnchor" href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 text-xs sm:text-sm font-semibold flex items-center gap-2 border border-slate-700 transition-colors">
-                    <span id="btnTextOpenPortal">સત્તાવાર પોર્ટલ ખોલો</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                  </a>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- Right Col: Quick Scenario Buttons -->
-          <div class="space-y-4">
-            
-            <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-3">
-              <h3 id="quickScenariosHeading" class="text-xs font-bold text-gold-400 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-bolt text-amber-400"></i>
-                <span>વારંવાર પૂછાતી સમસ્યાઓ (Quick Scenarios)</span>
-              </h3>
-              <p id="quickScenariosSub" class="text-[11px] text-slate-400">
-                કોઈપણ એક પર ક્લિક કરીને સીધું માર્ગદર્શન મેળવો:
-              </p>
-
-              <div class="space-y-2">
-                <button type="button" class="quick-scenario-btn w-full text-left p-3 rounded-xl bg-nyay-950/70 border border-slate-800 hover:border-gold-500/60 hover:bg-slate-850 transition-all group" data-query="મારા બેંક ખાતામાંથી અજાણ્યા વ્યક્તિએ ઓનલાઇન OTP વગર 25000 રૂપિયા ઉપાડી લીધા છે, મારે ક્યાં ફરિયાદ કરવી?">
-                  <div class="text-xs font-bold text-white group-hover:text-gold-300 flex items-center justify-between">
-                    <span>ઓનલાઇન સાયબર ફ્રોડ / પૈસા કપાઈ ગયા</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-500 group-hover:text-gold-400"></i>
-                  </div>
-                  <span class="text-[11px] text-slate-400 block mt-0.5">1930 હેલ્પલાઇન & બેંક ફ્રીઝ પ્રક્રિયા</span>
-                </button>
-
-                <button type="button" class="quick-scenario-btn w-full text-left p-3 rounded-xl bg-nyay-950/70 border border-slate-800 hover:border-gold-500/60 hover:bg-slate-850 transition-all group" data-query="ગામમાં ખેતરની જમીનની સીમા માપણી કરાવવી છે અને પાડોશી વિવાદ કરે છે. કાનૂની રસ્તો શું છે?">
-                  <div class="text-xs font-bold text-white group-hover:text-gold-300 flex items-center justify-between">
-                    <span>જમીન માપણી / ખેતર સીમા વિવાદ</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-500 group-hover:text-gold-400"></i>
-                  </div>
-                  <span class="text-[11px] text-slate-400 block mt-0.5">DILR કચેરી અરજી & મામલતદાર કોર્ટ</span>
-                </button>
-
-                <button type="button" class="quick-scenario-btn w-full text-left p-3 rounded-xl bg-nyay-950/70 border border-slate-800 hover:border-gold-500/60 hover:bg-slate-850 transition-all group" data-query="મારી પાસે વકીલ રાખવાના પૈસા નથી. શું મને સરકાર તરફથી મફત કાનૂની સહાય મળી શકે? તેની લાયકાત શું છે?">
-                  <div class="text-xs font-bold text-white group-hover:text-gold-300 flex items-center justify-between">
-                    <span>મફત કાનૂની સહાય (Free Legal Aid)</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-500 group-hover:text-gold-400"></i>
-                  </div>
-                  <span class="text-[11px] text-slate-400 block mt-0.5">NALSA / DLSA મફત સરકારી વકીલ</span>
-                </button>
-
-                <button type="button" class="quick-scenario-btn w-full text-left p-3 rounded-xl bg-nyay-950/70 border border-slate-800 hover:border-gold-500/60 hover:bg-slate-850 transition-all group" data-query="દુકાનદાર પાસેથી લીધેલ વોશિંગ મશીન 15 દિવસમાં બગડી ગયું અને વોરંટી હોવા છતાં રિપેર નથી કરી આપતા.">
-                  <div class="text-xs font-bold text-white group-hover:text-gold-300 flex items-center justify-between">
-                    <span>ગ્રાહક ફોરમ / ખામીયુક્ત સામાન</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-500 group-hover:text-gold-400"></i>
-                  </div>
-                  <span class="text-[11px] text-slate-400 block mt-0.5">e-Daakhil પોર્ટલ & વળતર પ્રક્રિયા</span>
-                </button>
-
-                <button type="button" class="quick-scenario-btn w-full text-left p-3 rounded-xl bg-nyay-950/70 border border-slate-800 hover:border-gold-500/60 hover:bg-slate-850 transition-all group" data-query="ગ્રામ પંચાયત અથવા તાલુકા કચેરીમાં આપેલ અરજીનો 2 મહિનાથી કોઈ જવાબ મળતો નથી. હવે શું કરવું?">
-                  <div class="text-xs font-bold text-white group-hover:text-gold-300 flex items-center justify-between">
-                    <span>સરકારી અરજીનો નિકાલ ન થવો</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-500 group-hover:text-gold-400"></i>
-                  </div>
-                  <span class="text-[11px] text-slate-400 block mt-0.5">CPGRAMS & RTI (માહિતી અધિકાર)</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Legal Aid Highlight Box -->
-            <div class="bg-gradient-to-br from-nyay-900 to-slate-900 border border-gold-500/30 p-5 rounded-2xl shadow-xl space-y-2">
-              <span class="text-xs font-bold text-gold-400 uppercase tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span id="factTitle">મહત્વની કાનૂની માહિતી</span>
-              </span>
-              <p id="factBody" class="text-xs text-slate-300 leading-relaxed">
-                કાનૂની સેવા સત્તા મંડળ અધિનિયમ (1987) હેઠળ <strong>મહિલાઓ, બાળકો, SC/ST</strong> અને ઓછી આવક ધરાવતા તમામ નાગરિકોને કોર્ટમાં <strong>મફત સરકારી વકીલ</strong> મેળવવાનો કાનૂની અધિકાર છે.
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-
+      <div class="card feature">
+        <div class="icon">💬</div><h3 id="textTitle">Text Assistant</h3>
+        <p id="textDesc">લખીને કાનૂની માહિતી શોધો.</p>
+        <button class="gold-btn" id="openTextBtn">Open Text</button>
       </div>
-
-      <!-- SECTION 2B: COMPLAINT / APPLICATION DRAFTER -->
-      <div id="dashSectionDrafter" class="dash-section hidden space-y-6">
-        
-        <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 id="drafterHeadTitle" class="text-lg sm:text-xl font-bold text-white">ઔપચારિક અરજી અને ફરિયાદ ડ્રાફ્ટર</h3>
-            <p id="drafterHeadSub" class="text-xs text-slate-400 mt-0.5">મામલતદાર, કલેક્ટર, પોલીસ કે કાનૂની સહાય કેન્દ્રમાં આપવા માટે યોગ્ય પત્ર તૈયાર કરો.</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button id="btnDrafterFillSample" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-gold-300 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition-colors">
-              <i class="fa-solid fa-wand-magic-sparkles"></i>
-              <span>નમૂનો ભરો (Sample)</span>
-            </button>
-            <button id="btnDrafterReset" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-red-900/40 text-red-400 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition-colors">
-              <i class="fa-solid fa-trash-can"></i>
-              <span>ખાલી કરો</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
-          <!-- Form Inputs (5 cols) -->
-          <div class="lg:col-span-5 bg-slate-900/80 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-3.5">
-            <div>
-              <label for="inputDrafterAuthority" class="block text-xs font-bold text-slate-300 mb-1">પ્રતિશ્રી (સંબંધિત કચેરી / હોદ્દો)</label>
-              <input type="text" id="inputDrafterAuthority" class="w-full text-xs sm:text-sm p-2.5 bg-nyay-950 border border-slate-700 rounded-lg text-white focus:border-gold-500 outline-none" placeholder="દા.ત. મામલતદાર શ્રી, તાલુકા કચેરી, ખાંભા">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label for="inputDrafterName" class="block text-xs font-bold text-slate-300 mb-1">અરજદારનું નામ</label>
-                <input type="text" id="inputDrafterName" class="w-full text-xs sm:text-sm p-2.5 bg-nyay-950 border border-slate-700 rounded-lg text-white focus:border-gold-500 outline-none" placeholder="દા.ત. દિવ્યેશ બંભણીયા">
-              </div>
-              <div>
-                <label for="inputDrafterPhone" class="block text-xs font-bold text-slate-300 mb-1">મોબાઇલ નંબર</label>
-                <input type="text" id="inputDrafterPhone" class="w-full text-xs sm:text-sm p-2.5 bg-nyay-950 border border-slate-700 rounded-lg text-white focus:border-gold-500 outline-none" placeholder="9876543210">
-              </div>
-            </div>
-
-            <div>
-              <label for="inputDrafterAddress" class="block text-xs font-bold text-slate-300 mb-1">પૂરું સરનામું</label>
-              <textarea id="inputDrafterAddress" rows="2" class="w-full text-xs sm:text-sm p-2.5 bg-nyay-950 border border-slate-700 rounded-lg text-white focus:border-gold-500 outline-none resize-none" placeholder="ગામ: ધૂંધવાણા, તા. ખાંભા, જિ. અમરેલી"></textarea>
-            </div>
-
-            <div>
-              <label for="inputDrafterSubject" class="block text-xs font-bold text-slate-300 mb-1">અરજીનો વિષય</label>
-              <input type="text" id="inputDrafterSubject" class="w-full text-xs sm:text-sm p-2.5 bg-nyay-950 border border-slate-700 rounded-lg text-white focus:border-gold-500 outline-none" placeholder="દા.ત. જમીન સીમા માપણી સત્વરે કરાવવા બાબત">
-            </div>
-
-            <div>
-              <label for="inputDrafterBody" class="block text-xs font-bold text-slate-300 mb-1">હકીકત અને વિગત</label>
-              <textarea id="inputDrafterBody" rows="4" class="w-full text-xs sm:text-sm p-2.5 bg-nyay-950 border border-slate-700 rounded-lg text-white focus:border-gold-500 outline-none resize-none" placeholder="તમારી સમસ્યાની વિગતવાર હકીકત અહીં લખો..."></textarea>
-            </div>
-
-            <div>
-              <label for="inputDrafterPrayer" class="block text-xs font-bold text-slate-300 mb-1">માંગણી / રાહત (પ્રાર્થના)</label>
-              <input type="text" id="inputDrafterPrayer" class="w-full text-xs sm:text-sm p-2.5 bg-nyay-950 border border-slate-700 rounded-lg text-white focus:border-gold-500 outline-none" placeholder="દા.ત. આ બાબતે સત્વરે તપાસ કરી યોગ્ય કાર્યવાહી કરવા વિનંતી.">
-            </div>
-
-            <button id="btnDrafterUpdate" type="button" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-amber-500 hover:from-gold-300 hover:to-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow-md">
-              ડ્રાફ્ટ અપડેટ કરો
-            </button>
-          </div>
-
-          <!-- Document Sheet (7 cols) -->
-          <div class="lg:col-span-7 space-y-3">
-            <div class="flex items-center justify-between">
-              <span id="previewLabel" class="text-xs font-bold uppercase tracking-wider text-slate-400">લેખિત અરજી પત્ર પ્રિવ્યુ (Letterhead)</span>
-              <div class="flex items-center gap-2">
-                <button id="btnDrafterCopy" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-gold-300 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition-colors">
-                  <i class="fa-regular fa-copy"></i>
-                  <span>કોપી કરો</span>
-                </button>
-                <button id="btnDrafterPrint" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition-colors">
-                  <i class="fa-solid fa-print"></i>
-                  <span>પ્રિન્ટ / PDF</span>
-                </button>
-              </div>
-            </div>
-
-            <div id="drafterPrintSheet" class="bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-2xl min-h-[500px] text-xs sm:text-sm space-y-4 font-sans leading-relaxed">
-              <div class="flex justify-between items-start border-b pb-3 border-slate-200">
-                <div>
-                  <h4 class="font-extrabold text-base text-slate-900">લેખિત રજૂઆત / અરજી પત્ર</h4>
-                  <p class="text-[11px] text-slate-500">તારીખ: <span id="sheetDate">04/11/2026</span></p>
-                </div>
-                <div class="text-right text-[11px] text-slate-500">
-                  <span>સ્થળ: <span id="sheetPlace">ગુજરાત</span></span>
-                </div>
-              </div>
-
-              <div class="space-y-1">
-                <p class="font-bold text-xs uppercase text-slate-500">પ્રતિ,</p>
-                <p id="sheetAuthority" class="font-bold text-slate-900 pl-3">[સંબંધિત કચેરીનું નામ / હોદ્દો]</p>
-              </div>
-
-              <div class="space-y-0.5">
-                <p class="font-bold text-xs uppercase text-slate-500">અરજદારની વિગત:</p>
-                <div class="pl-3 text-xs space-y-0.5">
-                  <p><span class="font-medium text-slate-600">નામ:</span> <span id="sheetName" class="font-bold text-slate-900">[અરજદારનું નામ]</span></p>
-                  <p><span class="font-medium text-slate-600">સરનામું:</span> <span id="sheetAddress">[સરનામું]</span></p>
-                  <p><span class="font-medium text-slate-600">મોબાઇલ:</span> <span id="sheetPhone">[મોબાઇલ નંબર]</span></p>
-                </div>
-              </div>
-
-              <div class="bg-slate-100 p-2.5 rounded border border-slate-200">
-                <p><span class="font-bold text-slate-900">વિષય:</span> <span id="sheetSubject" class="font-semibold text-slate-800">[અરજીનો વિષય]</span></p>
-              </div>
-
-              <div class="space-y-1 pt-1">
-                <p class="font-bold text-slate-800">માનનીય સાહેબશ્રી,</p>
-                <p id="sheetBody" class="text-slate-700 whitespace-pre-line text-justify pl-3">
-                  સવિનય ઉપરોક્ત વિષયના સંદર્ભમાં રજૂઆત કરવાની કે હું અરજદાર આ પત્ર દ્વારા આપ સાહેબનું ધ્યાન દોરવા માંગુ છું. મારી સમસ્યાની વિગત નીચે મુજબ છે...
-                </p>
-              </div>
-
-              <div class="space-y-1 pt-1">
-                <p class="font-bold text-slate-800">નમ્ર પ્રાર્થના:</p>
-                <p id="sheetPrayer" class="text-slate-700 pl-3">
-                  આ બાબતે સત્વરે યોગ્ય તપાસ કરી ઘટતી કાનૂની/વહીવટી કાર્યવાહી કરવા નમ્ર વિનંતી છે.
-                </p>
-              </div>
-
-              <div class="pt-8 flex justify-between items-end text-xs">
-                <div>
-                  <p class="text-slate-500">સાથે સામેલ રાખેલ પુરાવા:</p>
-                  <p class="text-slate-700">૧. આધાર કાર્ડની નકલ</p>
-                  <p class="text-slate-700">૨. સંબંધિત દસ્તાવેજી પુરાવા</p>
-                </div>
-                <div class="text-center">
-                  <div class="w-28 border-b border-slate-400 mb-1"></div>
-                  <p class="font-bold text-slate-900">અરજદારની સહી</p>
-                  <p id="sheetSignName" class="text-slate-600 text-[11px]">[અરજદારનું નામ]</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
+      <div class="card feature">
+        <div class="icon">📚</div><h3 id="libraryTitle">Constitution Library</h3>
+        <p id="libraryDesc">ભારતીય બંધારણના ઉપલબ્ધ Articles શોધો.</p>
+        <button class="gold-btn" id="openLibraryBtn">Open Library</button>
       </div>
-
-      <!-- SECTION 2C: CONSTITUTION LIBRARY -->
-      <div id="dashSectionLibrary" class="dash-section hidden space-y-6">
-        
-        <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-2xl shadow-xl">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-xl">
-              <i class="fa-solid fa-book-bookmark"></i>
-            </div>
-            <div>
-              <h3 id="libHeadTitle" class="text-xl font-bold text-white">ભારતીય સંવિધાન અને નાગરિક અધિકારો (Constitution Library)</h3>
-              <p id="libHeadSub" class="text-xs text-slate-400 mt-0.5">સામાન્ય નાગરિક માટે સૌથી વધુ ઉપયોગી બંધારણીય કલમો અને મૂળભૂત અધિકારો.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          
-          <!-- Article 14 -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-2 hover:border-gold-500/50 transition-all">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-gold-400 uppercase tracking-wider">અનુચ્છેદ ૧૪ (Article 14)</span>
-              <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">સમાનતાનો અધિકાર</span>
-            </div>
-            <h4 class="text-sm font-bold text-white">કાયદા સમક્ષ સમાનતા (Equality Before Law)</h4>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              રાજ્ય ભારતના પ્રદેશમાં કોઈપણ વ્યક્તિને કાયદા સમક્ષ સમાનતા અથવા કાયદાઓના સમાન રક્ષણથી વંચિત રાખશે નહીં. અમીર હોય કે ગરીબ, કાયદો બધા માટે સમાન છે.
-            </p>
-          </div>
-
-          <!-- Article 21 -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-2 hover:border-gold-500/50 transition-all">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-sky-400 uppercase tracking-wider">અનુચ્છેદ ૨૧ (Article 21)</span>
-              <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">જીવનનો હક્ક</span>
-            </div>
-            <h4 class="text-sm font-bold text-white">જીવન અને વ્યક્તિગત સ્વતંત્રતાનું રક્ષણ (Right to Life)</h4>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              કાયદા દ્વારા સ્થાપિત પ્રક્રિયા સિવાય કોઈપણ વ્યક્તિને તેના જીવન અથવા વ્યક્તિગત સ્વતંત્રતાથી વંચિત કરી શકાશે નહીં. આમાં ઝડપી ન્યાય અને ગૌરવપૂર્ણ જીવનનો હક્ક સામેલ છે.
-            </p>
-          </div>
-
-          <!-- Article 39A (Free Legal Aid) -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-2 hover:border-emerald-500/50 transition-all">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">અનુચ્છેદ ૩૯-એ (Article 39A)</span>
-              <span class="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">મફત કાનૂની સહાય</span>
-            </div>
-            <h4 class="text-sm font-bold text-white">સમાન ન્યાય અને મફત કાનૂની સહાય (Free Legal Aid for All)</h4>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              કોઈપણ નાગરિક આર્થિક કે અન્ય અસમર્થતાના કારણે ન્યાય મેળવવાની તકથી વંચિત ન રહે તે સુનિશ્ચિત કરવા રાજ્ય મફત કાનૂની સહાય પૂરી પાડશે. (NALSA & DLSA નો પાયો).
-            </p>
-          </div>
-
-          <!-- Article 32 & 226 -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-2 hover:border-amber-500/50 transition-all">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">અનુચ્છેદ ૩૨ & ૨૨૬ (Writs)</span>
-              <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">બંધારણીય ઉપાયો</span>
-            </div>
-            <h4 class="text-sm font-bold text-white">હાઇકોર્ટ અને સુપ્રીમ કોર્ટમાં રીટ અરજીનો હક્ક</h4>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              જો સરકાર કે કોઈ અધિકારી તમારા મૂળભૂત અધિકારનું ઉલ્લંઘન કરે, તો સીધા હાઇકોર્ટ (કલમ ૨૨૬) અથવા સુપ્રીમ કોર્ટ (કલમ ૩૨) માં હેબિયસ કોર્પસ કે મેન્ડેમસ રીટ દાખલ કરી શકાય છે.
-            </p>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- SECTION 2D: PORTALS & HELPLINES -->
-      <div id="dashSectionPortals" class="dash-section hidden space-y-6">
-        
-        <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-2xl shadow-xl">
-          <h3 id="portalHeadTitle" class="text-xl font-bold text-white">સત્તાવાર પોર્ટલ્સ અને તાકીદ હેલ્પલાઇન નંબરો</h3>
-          <p id="portalHeadSub" class="text-xs text-slate-400 mt-0.5">ભારત અને ગુજરાત સરકારના વેરિફાઇડ પોર્ટલ્સ જ્યાં ઓનલાઇન ફરિયાદ નોંધાવી શકાય છે.</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          
-          <!-- 15100 NALSA -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">કાનૂની સહાય</span>
-              <h4 class="text-2xl font-black text-white mt-1">15100</h4>
-              <p class="text-xs text-slate-300 mt-1">નાલ્સા (NALSA) અને Tele-Law રાષ્ટ્રીય ટોલ-ફ્રી મફત કાનૂની સહાય હેલ્પલાઇન.</p>
-            </div>
-            <a href="tel:15100" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-phone"></i> કૉલ કરો: 15100
-            </a>
-          </div>
-
-          <!-- 1930 Cyber Fraud -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">સાયબર ક્રાઈમ</span>
-              <h4 class="text-2xl font-black text-white mt-1">1930</h4>
-              <p class="text-xs text-slate-300 mt-1">ઓનલાઇન નાણાકીય છેતરપિંડી કે બેંક ફ્રોડ માટે રાષ્ટ્રીય તાકીદ હેલ્પલાઇન.</p>
-            </div>
-            <a href="tel:1930" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-phone"></i> કૉલ કરો: 1930
-            </a>
-          </div>
-
-          <!-- 181 Abhayam -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold text-rose-400 uppercase tracking-wider">મહિલા સુરક્ષા</span>
-              <h4 class="text-2xl font-black text-white mt-1">181</h4>
-              <p class="text-xs text-slate-300 mt-1">ગુજરાત સરકાર ૧૮૧ અભયમ ૨૪ કલાક મહિલા સહાય અને કાઉન્સેલિંગ હેલ્પલાઇન.</p>
-            </div>
-            <a href="tel:181" class="w-full py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-phone"></i> કૉલ કરો: 181
-            </a>
-          </div>
-
-          <!-- 1076 CM Helpline -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold text-sky-400 uppercase tracking-wider">સરકારી ફરિયાદ</span>
-              <h4 class="text-2xl font-black text-white mt-1">1076</h4>
-              <p class="text-xs text-slate-300 mt-1">ગુજરાત સીએમ હેલ્પલાઇન - સરકારી કચેરી કે યોજના વિલંબ ફરિયાદ નિવારણ.</p>
-            </div>
-            <a href="tel:1076" class="w-full py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-phone"></i> કૉલ કરો: 1076
-            </a>
-          </div>
-
-          <!-- 112 National Emergency -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ઈમરજન્સી</span>
-              <h4 class="text-2xl font-black text-white mt-1">112</h4>
-              <p class="text-xs text-slate-300 mt-1">પોલીસ, ફાયર અને એમ્બ્યુલન્સ સેવા માટે એક જ એકીકૃત રાષ્ટ્રીય નંબર.</p>
-            </div>
-            <a href="tel:112" class="w-full py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-phone"></i> કૉલ કરો: 112
-            </a>
-          </div>
-
-          <!-- 1915 Consumer Helpline -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider">ગ્રાહક સુરક્ષા</span>
-              <h4 class="text-2xl font-black text-white mt-1">1915</h4>
-              <p class="text-xs text-slate-300 mt-1">ખામીયુક્ત સામાન કે સેવામાં છેતરપિંડી માટે રાષ્ટ્રીય ગ્રાહક હેલ્પલાઇન.</p>
-            </div>
-            <a href="tel:1915" class="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-phone"></i> કૉલ કરો: 1915
-            </a>
-          </div>
-
-        </div>
-
-      </div>
-
     </div>
 
+
+    <section id="notificationPanel" class="notification-panel">
+      <h2 id="notificationsTitle">🔔 Notifications</h2>
+      <p class="muted" id="notificationsDesc">Choose which updates you want to receive.</p>
+      <button class="gold-btn" id="enablePushBtn" type="button">Enable push notifications</button>
+      <div id="notificationSettings">
+        <div class="notification-row">
+          <div class="notification-info"><strong id="notifyLegalLabel">Important legal updates</strong><small id="notifyLegalDesc">Important legal information and updates.</small></div>
+          <label class="notification-toggle"><input type="checkbox" data-category="legal_updates" id="notify-legal_updates"><span class="notification-slider"></span></label>
+        </div>
+        <div class="notification-row">
+          <div class="notification-info"><strong id="notifyApplicationLabel">Complaint and application status</strong><small id="notifyApplicationDesc">Updates about your complaint or application.</small></div>
+          <label class="notification-toggle"><input type="checkbox" data-category="application_status" id="notify-application_status"><span class="notification-slider"></span></label>
+        </div>
+        <div class="notification-row">
+          <div class="notification-info"><strong id="notifySystemLabel">System updates</strong><small id="notifySystemDesc">Important system updates.</small></div>
+          <label class="notification-toggle"><input type="checkbox" data-category="system_updates" id="notify-system_updates"><span class="notification-slider"></span></label>
+        </div>
+        <div class="notification-row">
+          <div class="notification-info"><strong id="notifyFuture4Label">Future feature 4</strong><small id="notifyFuture4Desc">Reserved for a future feature.</small></div>
+          <label class="notification-toggle"><input type="checkbox" data-category="future_feature_4" id="notify-future_feature_4"><span class="notification-slider"></span></label>
+        </div>
+        <div class="notification-row">
+          <div class="notification-info"><strong id="notifyFuture5Label">Future feature 5</strong><small id="notifyFuture5Desc">Reserved for a future feature.</small></div>
+          <label class="notification-toggle"><input type="checkbox" data-category="future_feature_5" id="notify-future_feature_5"><span class="notification-slider"></span></label>
+        </div>
+      </div>
+      <p id="notificationMessage" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="voicePanel" class="section panel hidden">
+      <h2>🎙️ Voice Assistant</h2>
+      <p class="muted" id="voiceHelp">માઇક્રોફોનથી પ્રશ્ન બોલો. Browser support જરૂરી છે.</p>
+      <textarea id="voiceQuestion" class="field" placeholder="તમારો પ્રશ્ન અહીં દેખાશે..."></textarea>
+      <div class="row">
+        <button class="gold-btn" id="listenBtn">🎙️ Start Listening</button>
+        <button class="ghost-btn" id="voiceSearchBtn">Search Question</button>
+        <button class="ghost-btn" id="speakBtn">🔊 Read Answer</button>
+      </div>
+      <div id="voiceResult"></div>
+    </section>
+
+    <section id="textPanel" class="section panel hidden">
+      <h2>💬 Text Assistant</h2>
+      <p class="muted">Constitution Library માં ઉપલબ્ધ માહિતી શોધો.</p>
+      <input id="textQuestion" class="field" placeholder="તમારો પ્રશ્ન અથવા keyword લખો...">
+      <button class="gold-btn" id="textSearchBtn">Search</button>
+      <div id="textResults"></div>
+    </section>
+
+    <section id="libraryPanel" class="section panel hidden">
+      <h2>📚 Constitution Library</h2>
+      <p class="muted">તમારા Backend માં ઉપલબ્ધ Constitution records.</p>
+      <div class="library-layout">
+        <div><h3>Parts</h3><div id="partsList">Loading...</div></div>
+        <div>
+          <h3>Articles</h3><div id="articlesList">Select a Part.</div>
+          <hr style="border-color:#ffffff18;margin:18px 0">
+          <h3>Article Details</h3><div id="articleDetails" class="article-view muted">Select an Article.</div>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Search Constitution</h3>
+        <div class="row">
+          <input id="librarySearch" class="field" placeholder="Search keyword or Article number">
+          <button class="gold-btn" id="librarySearchBtn">Search</button>
+        </div>
+        <div id="libraryResults"></div>
+      </div>
+    </section>
+    <p class="notice">Legal information is for general awareness only. It is not legal advice. Verify current law with official sources or a qualified legal professional.</p>
   </main>
-
-  <!-- ========================================== -->
-  <!-- MODAL 1: LANGUAGE SELECT (Matches Image 3) -->
-  <!-- ========================================== -->
-  <div id="modalLanguage" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-nyay-950/80 backdrop-blur-md p-4">
-    <div class="bg-nyay-900 border border-slate-700 max-w-sm w-full rounded-3xl shadow-2xl overflow-hidden p-6 space-y-5 text-center relative animate-fade-in">
-      
-      <!-- Styled Indian Flag Graphic (Matches Image 3) -->
-      <div class="w-full h-24 rounded-2xl overflow-hidden shadow-lg border border-slate-700/60 flex flex-col">
-        <div class="flex-1 bg-[#FF9933]"></div>
-        <div class="flex-1 bg-white flex items-center justify-center relative">
-          <!-- Ashoka Chakra 24-spoke SVG -->
-          <svg class="w-6 h-6 text-[#000080]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="12" r="9"/>
-            <circle cx="12" cy="12" r="2" fill="currentColor"/>
-            <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4L18.4 5.6"/>
-            <path d="M12 12l4.5-7.8M12 12l7.8-4.5M12 12l7.8 4.5M12 12l4.5 7.8M12 12l-4.5 7.8M12 12l-7.8 4.5M12 12l-7.8-4.5M12 12l-4.5-7.8"/>
-          </svg>
-        </div>
-        <div class="flex-1 bg-[#138808]"></div>
-      </div>
-
-      <div class="space-y-1">
-        <h3 id="modalLangTitle" class="text-lg font-bold text-white">Select your language</h3>
-        <p id="modalLangSub" class="text-xs text-slate-400">Choose your preferred language</p>
-      </div>
-
-      <!-- Language Buttons Grid -->
-      <div class="grid grid-cols-3 gap-2">
-        <button type="button" class="lang-option-btn p-3 rounded-xl border border-gold-500 bg-gold-500/10 text-white font-bold text-xs hover:border-gold-400 transition-all" data-lang="gu">
-          ગુજરાતી
-        </button>
-        <button type="button" class="lang-option-btn p-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold text-xs hover:border-slate-600 transition-all" data-lang="hi">
-          हिन्दी
-        </button>
-        <button type="button" class="lang-option-btn p-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold text-xs hover:border-slate-600 transition-all" data-lang="en">
-          English
-        </button>
-      </div>
-
-      <button id="modalLangContinueBtn" type="button" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-400 to-amber-500 hover:from-gold-300 hover:to-amber-400 text-slate-950 font-bold text-sm shadow-lg active:scale-95 transition-all">
-        Continue →
-      </button>
-
-      <p class="text-[10px] text-slate-500">
-        An independent student innovation. Not an official government portal.
-      </p>
-
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- MODAL 2: DEMO LOGIN / NAME (Matches Image 4) -->
-  <!-- ========================================== -->
-  <div id="modalDemoLogin" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-nyay-950/80 backdrop-blur-md p-4">
-    <div class="bg-nyay-900 border border-slate-700 max-w-sm w-full rounded-3xl shadow-2xl p-6 space-y-4 text-left relative">
-      
-      <div class="space-y-1">
-        <span class="text-[10px] font-bold text-gold-400 tracking-wider uppercase">NYAYMITRA-AI</span>
-        <h3 id="modalLoginTitle" class="text-xl font-bold text-white">Welcome</h3>
-        <p id="modalLoginSub" class="text-xs text-slate-400">Enter your name for this demo.</p>
-      </div>
-
-      <div>
-        <label for="inputUserName" class="sr-only">Your Name</label>
-        <input type="text" id="inputUserName" class="w-full p-3 bg-nyay-950 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:border-gold-500 outline-none" placeholder="તમારું નામ / Your name" value="Divyesh">
-      </div>
-
-      <div class="space-y-2 pt-2">
-        <button id="modalLoginContinueBtn" type="button" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-400 to-amber-500 hover:from-gold-300 hover:to-amber-400 text-slate-950 font-bold text-xs sm:text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
-          <span id="btnLoginContinueText">Continue to Dashboard →</span>
-        </button>
-
-        <button id="modalLoginBackBtn" type="button" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs border border-slate-700 transition-colors">
-          ← Back
-        </button>
-      </div>
-
-      <p class="text-[10px] text-slate-500 text-center">
-        આ Demo Profile છે, સુરક્ષિત account authentication નથી.
-      </p>
-
-    </div>
-  </div>
-
-  <!-- In-Page Toast Container -->
-  <div id="toastContainer" class="fixed bottom-16 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-  <!-- Persistent Bottom Footer Bar (Matches Image 1, 3, 5) -->
-  <footer class="bg-nyay-900/95 border-t border-slate-800/80 py-3 px-4 z-30">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
-      
-      <!-- Developer Credit (Requested by user) -->
-      <div class="flex items-center gap-2 text-slate-300 font-medium">
-        <span>🇮🇳</span>
-        <span>Created by Developer <strong class="text-gold-400 font-bold">Divyesh Bambhaniya (દિવ્યેશ બંભણીયા)</strong></span>
-      </div>
-
-      <!-- Motivation / Project Tagline (Requested by user) -->
-      <div class="flex items-center gap-2 text-slate-400 text-center sm:text-right text-[11px]">
-        <i class="fa-solid fa-scale-balanced text-gold-400 text-xs"></i>
-        <span>An Independent Student Innovation for Access to Justice in India</span>
-      </div>
-
-    </div>
+  <footer class="footer">
+    🇮🇳 Created by Divyesh Bambhaniya
+    <small>⚖️ An Independent Student Innovation for Access to Justice in India</small>
   </footer>
-
-  <!-- JavaScript Application Logic -->
-  <script>
-    (function () {
-      'use strict';
-
-      // Comprehensive Localization Dictionary
-      const i18n = {
-        gu: {
-          navSubBadge: 'AI-POWERED JUSTICE ACCESS & NAVIGATION',
-          currentLangLabel: 'ગુજરાતી',
-          navHomeText: 'મુખ્ય પૃષ્ઠ',
-          topMotto: 'તમારો હક, તમારો અવાજ | ભારતભરમાં દરેક નાગરિક માટે સમાન, સત્વરે અને પારદર્શક ન્યાય',
-          heroWelcomePrefix: 'Welcome to',
-          heroGujaratiHeadline: 'તમારો અવાજ મહત્વનો છે, તમારા અધિકારો પણ.',
-          heroDescription: 'ટેકનોલોજી જે દરેક સામાન્ય નાગરિકને કાનૂની માહિતી સમજવામાં અને યોગ્ય ન્યાય મેળવવાનો સાચો રસ્તો શોધવામાં મદદ કરે છે.',
-          scalesTitle: 'ન્યાયિક સમાનતા અને રક્ષણ',
-          scalesSub: 'બંધારણ હેઠળ દરેક નાગરિકને સમાન અને નિષ્પક્ષ ન્યાયનો કાનૂની હક્ક છે.',
-          constTitle: 'ભારતનું સંવિધાન (Constitution)',
-          constSub: 'મૂળભૂત હક્કો અને કલમ 39A હેઠળ મફત કાનૂની સહાય મેળવવાનો અધિકાર.',
-          btnGetStarted: 'શરૂ કરો (Get Started)',
-          btnSelectLang: 'ભાષા પસંદ કરો',
-          btnDemoLogin: 'ડેમો પ્રવેશ (Demo Login)',
-          card1Badge: '1. વોઇસ સહાયક',
-          card1Title: 'બોલીને પ્રશ્ન પૂછો',
-          card1Desc: 'ગુજરાતી, હિન્દી કે અંગ્રેજીમાં બોલીને તમારી મુશ્કેલી જણાવો અને તાત્કાલિક સલાહ મેળવો.',
-          card2Badge: '2. ટેક્સ્ટ સહાયક',
-          card2Title: 'લખીને માર્ગદર્શન મેળવો',
-          card2Desc: 'તમારી કાનૂની સમસ્યા ટાઈપ કરો અને સંબંધિત સરકારી કચેરી તથા પગલાં વિશે જાણો.',
-          card3Badge: '3. બંધારણ લાઈબ્રેરી',
-          card3Title: 'ભારતીય સંવિધાન જાણો',
-          card3Desc: 'મૂળભૂત અધિકારો, કલમો અને કાનૂની સેવા સત્તા મંડળ (NALSA) ના નિયમો વાંચો.',
-          landingDisclaimer: 'AI ન્યાય આપતું નથી. તે તમને કાનૂની માહિતી અને યોગ્ય માનવીય સહાય સુધી પહોંચવામાં મદદ કરે છે.',
-          dashEyebrow: 'તમારો હક. તમારો અવાજ. (YOUR RIGHTS. YOUR VOICE.)',
-          dashTitle: 'અમે તમારી સહાય માટે અહીં છીએ. (We are here to help.)',
-          dashSub: 'કાનૂની માહિતી શોધો, યોગ્ય સરકારી કચેરી ઓળખો અને આગળના પગલાં સરળતાથી સમજો.',
-          tabAssistant: 'વોઇસ & ટેક્સ્ટ સહાયક',
-          tabDrafter: 'અરજી ડ્રાફ્ટર',
-          tabLibrary: 'બંધારણ લાઈબ્રેરી',
-          tabPortals: 'સરકારી પોર્ટલ્સ & હેલ્પલાઇન',
-          micIdle: 'માઇક્રોફોન બટન દબાવો અને બોલો',
-          micListening: 'સાંભળી રહ્યું છે... બોલો (Listening...)',
-          micSub: 'ગુજરાતી, હિન્દી કે અંગ્રેજીમાં બોલી શકો છો (Web Speech API).',
-          queryLabel: 'તમારી મુશ્કેલી અહીં લખો અથવા ઉપર માઇકથી બોલો:',
-          queryPlaceholder: 'દા.ત. મારા ખાતામાંથી 15,000 રૂપિયા કપાઈ ગયા છે, હવે મારે શું કરવું જોઈએ?',
-          btnSubmit: 'માર્ગદર્શન મેળવો',
-          loadingMsg: 'NYAYMITRA કાયદાકીય અને સરકારી સેવાઓ તપાસી રહ્યું છે...',
-          speakBtn: 'સાંભળો',
-          speakStopBtn: 'બંધ કરો',
-          copyBtn: 'કોપી',
-          copiedBtn: 'કોપી થઈ ગયું!',
-          btnGenDraft: 'આ કેસ માટે અરજી તૈયાર કરો',
-          btnOpenPortal: 'સત્તાવાર પોર્ટલ ખોલો',
-          labelSummary: 'સરળ સારાંશ (Summary)',
-          labelSteps: 'તાત્કાલિક લેવાના પગલાં (Action Steps)',
-          labelAuthority: 'સંબંધિત કચેરી:',
-          labelHelpline: 'તાકીદ હેલ્પલાઇન:',
-          labelDocs: 'જરૂરી પુરાવા / દસ્તાવેજો',
-          quickHead: 'વારંવાર પૂછાતી સમસ્યાઓ (Quick Scenarios)',
-          quickSub: 'કોઈપણ એક પર ક્લિક કરીને સીધું માર્ગદર્શન મેળવો:',
-          factTitle: 'મહત્વની કાનૂની માહિતી',
-          factBody: 'કાનૂની સેવા સત્તા મંડળ અધિનિયમ (1987) હેઠળ મહિલાઓ, બાળકો, SC/ST અને ઓછી આવક ધરાવતા તમામ નાગરિકોને કોર્ટમાં મફત સરકારી વકીલ મેળવવાનો કાનૂની અધિકાર છે.',
-          loginTitle: 'Welcome',
-          loginSub: 'Enter your name for this demo.',
-          loginBtnText: 'Continue to Dashboard →'
-        },
-        hi: {
-          navSubBadge: 'AI-POWERED JUSTICE ACCESS & NAVIGATION',
-          currentLangLabel: 'हिन्दी',
-          navHomeText: 'होम पेज',
-          topMotto: 'आपका अधिकार, आपकी आवाज़ | भारतभर में प्रत्येक नागरिक के लिए समान, त्वरित और पारदर्शी न्याय',
-          heroWelcomePrefix: 'Welcome to',
-          heroGujaratiHeadline: 'आपकी आवाज़ महत्वपूर्ण है, आपके अधिकार भी।',
-          heroDescription: 'तकनीक जो प्रत्येक नागरिक को कानूनी जानकारी समझने और न्याय का सही मार्ग तलाशने में मदद करती है।',
-          scalesTitle: 'न्यायिक समानता एवं सुरक्षा',
-          scalesSub: 'संविधान के अंतर्गत प्रत्येक नागरिक को समान और निष्पक्ष न्याय का अधिकार प्राप्त है।',
-          constTitle: 'भारत का संविधान (Constitution)',
-          constSub: 'मौलिक अधिकार एवं अनुच्छेद 39A के तहत निःशुल्क कानूनी सहायता पाने का अधिकार।',
-          btnGetStarted: 'प्रारंभ करें (Get Started)',
-          btnSelectLang: 'भाषा चुनें',
-          btnDemoLogin: 'डेमो प्रवेश (Demo Login)',
-          card1Badge: '1. वॉइस सहायक',
-          card1Title: 'बोलकर प्रश्न पूछें',
-          card1Desc: 'गुजराती, हिन्दी या अंग्रेज़ी में बोलकर अपनी समस्या बताएं और तुरंत सलाह पाएं।',
-          card2Badge: '2. टेक्स्ट सहायक',
-          card2Title: 'लिखकर मार्गदर्शन पाएं',
-          card2Desc: 'अपनी समस्या लिखकर संबंधित सरकारी कार्यालय और प्रक्रिया की जानकारी लें।',
-          card3Badge: '3. संविधान लाइब्रेरी',
-          card3Title: 'भारतीय संविधान जानें',
-          card3Desc: 'मौलिक अधिकार, महत्वपूर्ण अनुच्छेद और NALSA की निःशुल्क विधिक सेवा के नियम पढ़ें।',
-          landingDisclaimer: 'AI न्याय नहीं देता। यह केवल कानूनी जानकारी एवं सही मानव सहायता तक पहुंचने में मदद करता है।',
-          dashEyebrow: 'आपका अधिकार. आपकी आवाज़. (YOUR RIGHTS. YOUR VOICE.)',
-          dashTitle: 'हम आपकी सहायता के लिए उपस्थित हैं।',
-          dashSub: 'कानूनी जानकारी खोजें, संबंधित विभाग पहचानें और आगे के कदम समझें।',
-          tabAssistant: 'वॉइस & टेक्स्ट सहायक',
-          tabDrafter: 'आवेदन ड्राफ्टर',
-          tabLibrary: 'संविधान लाइब्रेरी',
-          tabPortals: 'सरकारी पोर्टल एवं हेल्पलाइन',
-          micIdle: 'माइक्रोफ़ोन बटन दबाएं और बोलें',
-          micListening: 'सुन रहा हूँ... बोलिए (Listening...)',
-          micSub: 'गुजराती, हिन्दी या अंग्रेज़ी में बोल सकते हैं (Web Speech API).',
-          queryLabel: 'अपनी समस्या यहां लिखें या ऊपर माइक से बोलें:',
-          queryPlaceholder: 'उदा. मेरे बैंक खाते से बिना OTP 15,000 रुपये कट गए हैं, मुझे क्या करना चाहिए?',
-          btnSubmit: 'मार्गदर्शन प्राप्त करें',
-          loadingMsg: 'NYAYMITRA कानूनी एवं सरकारी सेवाएं खोज रहा है...',
-          speakBtn: 'सुनें',
-          speakStopBtn: 'रोकें',
-          copyBtn: 'कॉपी',
-          copiedBtn: 'कॉपी हो गया!',
-          btnGenDraft: 'इस केस हेतु आवेदन तैयार करें',
-          btnOpenPortal: 'आधिकारिक पोर्टल खोलें',
-          labelSummary: 'सरल सारांश (Summary)',
-          labelSteps: 'तत्काल उठाए जाने वाले कदम (Action Steps)',
-          labelAuthority: 'संबंधित कार्यालय:',
-          labelHelpline: 'आपातकालीन हेल्पलाइन:',
-          labelDocs: 'आवश्यक प्रमाण / दस्तावेज़',
-          quickHead: 'अक्सर पूछे जाने वाले मामले (Quick Scenarios)',
-          quickSub: 'किसी भी विकल्प पर क्लिक करके तुरंत मार्गदर्शन पाएं:',
-          factTitle: 'महत्वपूर्ण कानूनी जानकारी',
-          factBody: 'विधिक सेवा प्राधिकरण अधिनियम (1987) के अंतर्गत महिलाओं, बच्चों, SC/ST एवं कम आय वाले नागरिकों को कोर्ट में निःशुल्क सरकारी वकील पाने का कानूनी अधिकार है।',
-          loginTitle: 'Welcome',
-          loginSub: 'Enter your name for this demo.',
-          loginBtnText: 'Continue to Dashboard →'
-        },
-        en: {
-          navSubBadge: 'AI-POWERED JUSTICE ACCESS & NAVIGATION',
-          currentLangLabel: 'English',
-          navHomeText: 'Home',
-          topMotto: 'Your Rights, Your Voice | Equitable, Accessible, and Timely Justice for Every Citizen of India',
-          heroWelcomePrefix: 'Welcome to',
-          heroGujaratiHeadline: 'Your voice matters. So do your rights.',
-          heroDescription: 'Technology that helps every citizen understand legal information and find the right path to justice.',
-          scalesTitle: 'Judicial Equality & Protection',
-          scalesSub: 'Under the Constitution, every citizen has the fundamental right to equal and fair justice.',
-          constTitle: 'Constitution of India',
-          constSub: 'Fundamental rights and the statutory guarantee of free legal aid under Article 39A.',
-          btnGetStarted: 'Get Started →',
-          btnSelectLang: 'Select Language',
-          btnDemoLogin: 'Demo Login',
-          card1Badge: '1. VOICE ASSISTANT',
-          card1Title: 'Ask by Speaking',
-          card1Desc: 'Speak in Gujarati, Hindi, or English to describe your grievance and receive step-by-step guidance.',
-          card2Badge: '2. TEXT ASSISTANT',
-          card2Title: 'Search by Typing',
-          card2Desc: 'Type your legal query to identify designated government authorities, helplines, and required documents.',
-          card3Badge: '3. CONSTITUTION LIBRARY',
-          card3Title: 'Explore Articles',
-          card3Desc: 'Read key Articles of the Indian Constitution, citizen rights, and free legal aid entitlements.',
-          landingDisclaimer: 'AI does not make judicial decisions. It provides information and guides citizens to authorized human assistance.',
-          dashEyebrow: 'YOUR RIGHTS. YOUR VOICE.',
-          dashTitle: 'We are here to help.',
-          dashSub: 'Explore information, find services, and understand possible next steps.',
-          tabAssistant: 'Voice & Text Assistant',
-          tabDrafter: 'Application Drafter',
-          tabLibrary: 'Constitution Library',
-          tabPortals: 'Official Portals & Helplines',
-          micIdle: 'Tap microphone button to speak',
-          micListening: 'Listening... Please speak now',
-          micSub: 'Supports Gujarati, Hindi, and English voice input (Web Speech API).',
-          queryLabel: 'Describe your issue below or tap the microphone above:',
-          queryPlaceholder: 'e.g. Someone deducted 15,000 rupees from my bank account unauthorizedly. What should I do?',
-          btnSubmit: 'Get Guidance',
-          loadingMsg: 'NYAYMITRA is researching legal protocols and official directories...',
-          speakBtn: 'Listen',
-          speakStopBtn: 'Stop Audio',
-          copyBtn: 'Copy',
-          copiedBtn: 'Copied!',
-          btnGenDraft: 'Draft Application for this Case',
-          btnOpenPortal: 'Open Official Portal',
-          labelSummary: 'Plain-Language Summary',
-          labelSteps: 'Immediate Action Steps',
-          labelAuthority: 'Designated Authority:',
-          labelHelpline: 'Emergency Helpline:',
-          labelDocs: 'Required Documents & Evidence',
-          quickHead: 'Common Citizen Scenarios',
-          quickSub: 'Click any scenario below to get instant navigation:',
-          factTitle: 'Statutory Legal Aid Right',
-          factBody: 'Under Section 12 of the Legal Services Authorities Act (1987), women, children, SC/ST citizens, and economically weaker individuals are entitled to completely free court advocates.',
-          loginTitle: 'Welcome',
-          loginSub: 'Enter your name for this demo.',
-          loginBtnText: 'Continue to Dashboard →'
-        }
-      };
-
-      // State
-      let currentLang = 'gu';
-      let userName = 'Divyesh';
-      let ttsEnabled = true;
-      let isListening = false;
-      let recognition = null;
-      let currentResultData = null;
-
-      // Knowledge Base
-      const legalDatabase = [
-        {
-          id: 'cyber',
-          keywords: ['સાયબર', 'બેંક', 'ઓનલાઇન', 'પૈસા', 'ઓટીપી', 'otp', 'ખાતામાંથી', 'કપાઈ', 'છેતરપિંડી', 'cyber', 'fraud', 'bank', 'money', 'scam', 'साइबर', 'बैंक', 'पैसे', 'कट'],
-          category: {
-            gu: 'સાયબર સુરક્ષા અને નાણાકીય છેતરપિંડી',
-            hi: 'साइबर सुरक्षा एवं वित्तीय धोखाधड़ी',
-            en: 'Cyber Security & Financial Fraud'
-          },
-          summary: {
-            gu: 'ઓનલાઇન કે બેંકિંગ છેતરપિંડીના કિસ્સામાં શરૂઆતના ૧ થી ૩ કલાક (ગોલ્ડન અવર્સ) સૌથી મહત્વના હોય છે. તરત જ ૧૯૩૦ પર કૉલ કરવાથી નાણાં ટ્રાન્સફર થતા અટકાવી શકાય છે.',
-            hi: 'ऑनलाइन या बैंकिंग धोखाधड़ी में पहले 1 से 3 घंटे सबसे महत्वपूर्ण होते हैं। तुरंत 1930 पर कॉल करने से पैसे ट्रांसफर होने से रोके जा सकते हैं।',
-            en: 'In unauthorized banking or cyber fraud, the first 1 to 3 golden hours are critical. Immediate reporting to 1930 allows authorities to freeze funds.'
-          },
-          steps: {
-            gu: [
-              'તરત જ ૧૯૩૦ (1930) રાષ્ટ્રીય સાયબર ફ્રોડ હેલ્પલાઇન પર કૉલ કરો.',
-              'તમારી બેંક કસ્ટમર કેરમાં કૉલ કરીને સંબંધિત ખાતું અને ડેબિટ/ક્રેડિટ કાર્ડ તાત્કાલિક બ્લોક કરાવો.',
-              'સાયબર ક્રાઈમ સત્તાવાર પોર્ટલ (cybercrime.gov.in) પર ઓનલાઇન ફરિયાદ નોંધાવો.',
-              'નજીકના સાયબર ક્રાઈમ પોલીસ સ્ટેશનમાં લેખિત અરજી બેંક સ્ટેટમેન્ટ સાથે આપો.'
-            ],
-            hi: [
-              'तुरंत 1930 राष्ट्रीय साइबर हेल्पलाइन पर कॉल करें।',
-              'अपनी बैंक शाखा या कस्टमर केयर पर कॉल करके संबंधित खाता/कार्ड तुरंत ब्लॉक कराएं।',
-              'राष्ट्रीय साइबर क्राइम पोर्टल (cybercrime.gov.in) पर ऑनलाइन शिकायत दर्ज करें।',
-              'निकटतम साइबर क्राइम पुलिस स्टेशन में बैंक स्टेटमेंट के साथ लिखित शिकायत दें।'
-            ],
-            en: [
-              'Immediately dial 1930 (National Cybercrime Financial Fraud Helpline) to freeze fraudulent transfers.',
-              'Contact your bank customer care immediately to block debit/credit cards and freeze internet banking.',
-              'File an official incident report on https://cybercrime.gov.in.',
-              'Submit a written application along with bank statement at the local cyber police cell.'
-            ]
-          },
-          authority: {
-            gu: 'નેશનલ સાયબર ક્રાઈમ રિપોર્ટિંગ પોર્ટલ & સ્થાનિક સાયબર પોલીસ',
-            hi: 'राष्ट्रीय साइबर अपराध रिपोर्टिंग पोर्टल एवं स्थानीय साइबर पुलिस',
-            en: 'National Cyber Crime Reporting Portal (MHA) & Local Cyber Police'
-          },
-          helpline: '1930',
-          portalUrl: 'https://cybercrime.gov.in',
-          docs: {
-            gu: ['બેંક પાસબુક અથવા એકાઉન્ટ સ્ટેટમેન્ટ (ફ્રોડ વ્યવહાર દર્શાવેલ)', 'મોબાઇલ પર આવેલ છેતરપિંડીના SMS/મેસેજનો સ્ક્રીનશોટ', 'ઓળખનો પુરાવો (આધાર કાર્ડ/ચૂંટણી કાર્ડ)'],
-            hi: ['बैंक पासबुक या बैंक स्टेटमेंट', 'मोबाइल पर आए धोखाधड़ी के SMS का स्क्रीनशॉट', 'पहचान प्रमाण (आधार कार्ड/वोटर आईडी)'],
-            en: ['Bank account statement highlighting fraudulent debits', 'Screenshots of suspicious SMS/WhatsApp messages', 'Valid ID Proof (Aadhaar/Voter ID)']
-          },
-          draftTemplate: {
-            subject: 'ઓનલાઇન અનઅધિકૃત નાણાકીય છેતરપિંડી અંગે કાનૂની તપાસ અને રકમ ફ્રીઝ કરાવવા બાબત',
-            body: 'સવિનય જણાવવાનું કે મારા બેંક એકાઉન્ટમાંથી અજાણ્યા સ્ત્રોત દ્વારા અનઅધિકૃત રીતે નાણાં ઉપાડી લેવામાં આવ્યા છે. મેં કોઈ OTP કે પાસવર્ડ શેર કરેલ નથી. આ બાબતે મેં ૧૯૩૦ પર પણ જાણ કરેલ છે. કૃપા કરીને આ વ્યવહારની તપાસ કરી મારી રકમ પરત અપાવવા યોગ્ય કાનૂની કાર્યવાહી કરશો.',
-            prayer: 'આ બનાવ અંગે યોગ્ય ગુનો નોંધી છેતરપિંડી કરનાર એકાઉન્ટ ફ્રીઝ કરી નાણાં પરત અપાવવા નમ્ર વિનંતી છે.',
-            authority: 'પોલીસ ઇન્સ્પેક્ટર શ્રી, સાયબર ક્રાઇમ પોલીસ સ્ટેશન'
-          }
-        },
-        {
-          id: 'land',
-          keywords: ['જમીન', 'ખેતર', 'માપણી', 'સીમા', 'પાડોશી', 'વિવાદ', 'મામલતદાર', 'દસ્તાવેજ', 'રેવન્યુ', 'dilr', 'land', 'farm', 'survey', 'boundary', 'revenue', 'ज़मीन', 'खेत', 'नाप', 'पटवारी', 'सीमा'],
-          category: {
-            gu: 'મહેસૂલી બાબતો અને જમીન સીમા વિવાદ',
-            hi: 'राजस्व मामले एवं भूमि सीमा विवाद',
-            en: 'Revenue Matters & Land Demarcation Disputes'
-          },
-          summary: {
-            gu: 'ખેતર કે પ્લોટની જમીન સીમા બાબતે વિવાદ હોય તો DILR (જિલ્લા જમીન દફતર કચેરી) દ્વારા સરકારી હદ માપણી કરાવવી એ પ્રથમ કાનૂની પગલું છે.',
-            hi: 'खेत या प्लॉट की जमीन की सीमा को लेकर विवाद होने पर DILR के माध्यम से सरकारी पैमाइश कराना पहला कानूनी कदम है।',
-            en: 'For agricultural land or boundary demarcation disputes, obtaining official government land measurement through the DILR office is the primary legal remedy.'
-          },
-          steps: {
-            gu: [
-              'તમારી જમીનનો ૭/૧૨ અને ૮-અ નો તાજો ઉતારો (anyror પોર્ટલ) કઢાવો.',
-              'તાલુકા કચેરી / સેવા સદનમાં આવેલી DILR શાખામાં જમીન માપણી માટે નિયત ફી ભરીને અરજી કરો.',
-              'સરકારી સર્વેયર દ્વારા માપણીની તારીખે પાડોશી ખાતેદારોને પંચનામા માટે નોટિસ મોકલવામાં આવશે.',
-              'જો કોઈ ગેરકાયદેસર રસ્તો રોકતો હોય તો મામલતદાર કોર્ટ એક્ટ હેઠળ મામલતદાર સમક્ષ કેસ દાખલ કરી શકાય છે.'
-            ],
-            hi: [
-              'अपनी ज़मीन की 7/12 और 8-अ की ताज़ा नकल (anyror पोर्टल) निकालें।',
-              'तहसील/तालुका कार्यालय में DILR शाखा में सरकारी पैमाइश हेतु निर्धारित शुल्क भरकर आवेदन करें।',
-              'सरकारी सर्वेयर द्वारा सीमा नाप की तारीख पर आसपास के काश्तकारों को नोटिस भेजा जाएगा।',
-              'यदि कोई अवैध रूप से रास्ता रोक रहा हो, तो तहसीलदार/मामलतदार कोर्ट में दावा प्रस्तुत करें।'
-            ],
-            en: [
-              'Obtain latest digital 7/12 and 8-A land records from AnyRoR Gujarat portal.',
-              'File an application for boundary demarcation (Maapni) with prescribed fees at DILR office.',
-              'Official notices will be served to adjacent plot/land owners prior to physical spot measurement.',
-              'If right-of-way is obstructed, initiate proceedings before Mamlatdar Court under the Mamlatdar Courts Act.'
-            ]
-          },
-          authority: {
-            gu: 'મામલતદાર કચેરી / DILR (જિલ્લા જમીન દફતર કચેરી)',
-            hi: 'मामलतदार कार्यालय / DILR (जिला भूमि अभिलेख कार्यालय)',
-            en: 'Mamlatdar Office / DILR (District Inspector Land Records)'
-          },
-          helpline: '1076 (CM Helpline)',
-          portalUrl: 'https://anyror.gujarat.gov.in',
-          docs: {
-            gu: ['જમીનના ૭/૧૨ અને ૮-અ ના ઉતારા (ચાલુ વર્ષના)', 'ગામ નમુનો નં. ૬ (હક્ક પત્રક)', 'જમીનનો સત્તાવાર નકશો / ટીપણી', 'અરજદારનું આધાર કાર્ડ'],
-            hi: ['ज़मीन की ताज़ा 7/12 और 8-अ नकल', 'हक पत्रक (गांव नमूना नंबर 6)', 'ज़मीन का सरकारी नक्शा / टिपणी', 'आवेदक का आधार कार्ड'],
-            en: ['Latest 7/12 & 8-A Land Record extracts', 'Village Form No. 6 (Mutation Entry Register)', 'Cadastral land map / Tippani copy', 'Applicant ID Proof (Aadhaar)']
-          },
-          draftTemplate: {
-            subject: 'મોજે [ગામનું નામ] ના સરવે નંબર [નંબર] વાળી જમીનની હદ માપણી અને સીમા ચિન્હો કાયમ કરવા બાબત',
-            body: 'સવિનય ઉપરોક્ત વિષયે જણાવવાનું કે મોજે [ગામ] માં આવેલ ખાતા નંબર [નંબર] વાળી જમીન હું અરજદારના નામે ચાલે છે. સદર જમીનની બાજુમાં આવેલ ખાતેદાર સાથે સીમા બાબતે વિવાદ ઉપસ્થિત થયેલ હોવાથી સરકારી સર્વેયર દ્વારા સ્થળ તપાસ કરી કાયદેસર માપણી કરી આપવા વિનંતી છે.',
-            prayer: 'નિયત સરકારી ફી ભરીને આ જમીનની સરકારી માપણી કરી હદ નિશાન કાયમ કરી આપવા હુકમ કરવા વિનંતી.',
-            authority: 'માનનીય મામલતદાર સાહેબશ્રી / DILR કચેરી'
-          }
-        },
-        {
-          id: 'legal_aid',
-          keywords: ['મફત', 'વકીલ', 'કાનૂની સહાય', 'સહાય', 'કોર્ટ', 'કેસ', 'લીગલ એઇડ', 'ગરીબ', 'પૈસા નથી', 'free', 'legal', 'aid', 'lawyer', 'nalsa', 'dlsa', 'tele-law', 'मुफ्त', 'वकील', 'कानूनी', 'सहायता'],
-          category: {
-            gu: 'મફત કાનૂની સહાય અને ન્યાયિક માર્ગદર્શન (Legal Aid)',
-            hi: 'निःशुल्क कानूनी सहायता (Legal Aid & NALSA)',
-            en: 'Free Legal Aid & State Legal Services (NALSA/GSLSA)'
-          },
-          summary: {
-            gu: 'કાનૂની સેવા સત્તા મંડળ અધિનિયમ (1987) ની કલમ 12 હેઠળ મહિલાઓ, બાળકો, SC/ST અને ગરીબ નાગરિકોને કોર્ટમાં કેસ લડવા માટે સરકાર તરફથી સંપૂર્ણ મફત વકીલ આપવામાં આવે છે.',
-            hi: 'विधिक सेवा प्राधिकरण अधिनियम (1987) की धारा 12 के अंतर्गत महिलाओं, बच्चों, SC/ST एवं आर्थिक रूप से कमज़ोर नागरिकों को मुक़दमे के लिए निःशुल्क सरकारी वकील उपलब्ध कराया जाता है।',
-            en: 'Under Section 12 of the Legal Services Authorities Act (1987), women, children, SC/ST persons, and low-income citizens are entitled to free legal representation.'
-          },
-          steps: {
-            gu: [
-              '૧૫૧૦૦ (15100) ટોલ-ફ્રી હેલ્પલાઇન પર કૉલ કરીને તાત્કાલિક ટેલિફોનિક વકીલ પરામર્શ મેળવો.',
-              'જિલ્લા કોર્ટ અથવા તાલુકા કોર્ટમાં આવેલી DLSA / TLSC કચેરીની રૂબરૂ મુલાકાત લો.',
-              'ગ્રામ પંચાયત CSC કેન્દ્ર પરથી Tele-Law પોર્ટલ દ્વારા પેનલ વકીલ સાથે વિડીયો કૉન્ફરન્સથી વાત કરો.',
-              'મફત કાનૂની સહાય ફોર્મ ભરીને આવક અથવા કેટેગરી પુરાવો જોડીને પેનલ એડવોકેટ મેળવો.'
-            ],
-            hi: [
-              '15100 टोल-फ्री राष्ट्रीय हेल्पलाइन पर कॉल करके कानूनी परामर्श लें।',
-              'जिला या तहसील कोर्ट में स्थित DLSA / TLSC विधिक सेवा केंद्र पर जाएं।',
-              'ग्राम पंचायत के CSC केंद्र पर Tele-Law के जरिए सरकारी वकील से वीडियो परामर्श प्राप्त करें।',
-              'निःशुल्क विधिक सहायता आवेदन भरकर अपना पैनल वकील नियुक्त करवाएं।'
-            ],
-            en: [
-              'Call national toll-free helpline 15100 for immediate legal counseling.',
-              'Visit your District Court or Taluka Legal Services Committee (DLSA/TLSC) office.',
-              'Book an appointment at your local Village Panchayat CSC Center via the Tele-Law portal.',
-              'Submit a simple Legal Aid application with income or category certificate to get an allotted panel advocate.'
-            ]
-          },
-          authority: {
-            gu: 'જિલ્લા કાનૂની સેવા સત્તા મંડળ (DLSA) / GSLSA',
-            hi: 'जिला विधिक सेवा प्राधिकरण (DLSA) / NALSA',
-            en: 'District Legal Services Authority (DLSA) / NALSA'
-          },
-          helpline: '15100',
-          portalUrl: 'https://nalsa.gov.in',
-          docs: {
-            gu: ['આધાર કાર્ડ અથવા ચૂંટણી કાર્ડ', 'આવકનો દાખલો (જો સામાન્ય વર્ગ હોય) અથવા જાતિનું પ્રમાણપત્ર', 'કેસ અથવા નોટિસને લગતા કાગળો (જો કોર્ટ નોટિસ આવેલ હોય)'],
-            hi: ['आधार कार्ड अथवा मतदाता पहचान पत्र', 'आय प्रमाण पत्र या जाति प्रमाण पत्र', 'मुक़दमे या नोटिस से संबंधित दस्तावेज़'],
-            en: ['Aadhaar Card or Photo ID Proof', 'Income certificate or Caste Certificate', 'Court notices or summon documents (if received)']
-          },
-          draftTemplate: {
-            subject: 'અદાલતી કાર્યવાહી માટે મફત કાનૂની સહાય (પેનલ વકીલ) ફાળવવા બાબત અરજી',
-            body: 'સવિનય રજૂઆત કે હું અરજદાર આર્થિક રીતે નબળા વર્ગમાંથી આવું છું અને ખાનગી વકીલની ફી ચૂકવવા અસમર્થ છું. મારી વિરુદ્ધ/મારા તરફથી અદાલતમાં કાનૂની કાર્યવાહી કરવાની જરૂરિયાત ઉપસ્થિત થયેલ છે. કાનૂની સેવા સત્તા મંડળ અધિનિયમ ૧૯૮૭ ની કલમ ૧૨ હેઠળ મને સક્ષમ સરકારી વકીલ ફાળવવા વિનંતી છે.',
-            prayer: 'ન્યાયના હિતમાં મને મફત કાનૂની સહાય તથા યોગ્ય પેનલ એડવોકેટ નિમી આપવા નમ્ર વિનંતી છે.',
-            authority: 'માનનીય સચિવશ્રી, જિલ્લા કાનૂની સેવા સત્તા મંડળ (DLSA)'
-          }
-        }
-      ];
-
-      // Toast Notification
-      function showToast(message, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        const toast = document.createElement('div');
-        const bgColors = {
-          success: 'bg-emerald-900/90 text-white border-emerald-600',
-          error: 'bg-rose-900/90 text-white border-rose-600',
-          info: 'bg-slate-900/95 text-white border-gold-500/50'
-        };
-        toast.className = `p-3 rounded-xl shadow-2xl border text-xs font-semibold flex items-center gap-2 transform transition-all duration-300 pointer-events-auto backdrop-blur-md ${bgColors[type] || bgColors.info}`;
-        toast.innerHTML = `<i class="fa-solid fa-circle-check text-gold-400"></i><span>${message}</span>`;
-        container.appendChild(toast);
-        setTimeout(() => {
-          toast.classList.add('opacity-0', 'translate-y-2');
-          setTimeout(() => toast.remove(), 300);
-        }, 3000);
-      }
-
-      // TTS Audio
-      function speakText(text) {
-        if (!ttsEnabled || !('speechSynthesis' in window)) return;
-        window.speechSynthesis.cancel();
-        if (!text) return;
-        const utterance = new SpeechSynthesisUtterance(text);
-        const langCodes = { gu: 'gu-IN', hi: 'hi-IN', en: 'en-US' };
-        utterance.lang = langCodes[currentLang] || 'gu-IN';
-        utterance.rate = 0.95;
-
-        utterance.onstart = function () {
-          const speakBtn = document.getElementById('resSpeakBtn');
-          if (speakBtn) {
-            document.getElementById('resSpeakText').textContent = i18n[currentLang].speakStopBtn;
-          }
-        };
-
-        utterance.onend = utterance.onerror = function () {
-          const speakBtn = document.getElementById('resSpeakBtn');
-          if (speakBtn) {
-            document.getElementById('resSpeakText').textContent = i18n[currentLang].speakBtn;
-          }
-        };
-
-        window.speechSynthesis.speak(utterance);
-      }
-
-      function stopSpeaking() {
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-          const speakBtn = document.getElementById('resSpeakBtn');
-          if (speakBtn) {
-            document.getElementById('resSpeakText').textContent = i18n[currentLang].speakBtn;
-          }
-        }
-      }
-
-      // Web Speech Recognition
-      function initSpeechRecognition() {
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRec) {
-          document.getElementById('dashMicSub').textContent = 'બ્રાઉઝરમાં Web Speech API સપોર્ટેડ નથી. ટેક્સ્ટ દ્વારા ટાઈપ કરો.';
-          return;
-        }
-
-        recognition = new SpeechRec();
-        recognition.continuous = false;
-        recognition.interimResults = true;
-
-        const langCodes = { gu: 'gu-IN', hi: 'hi-IN', en: 'en-US' };
-        recognition.lang = langCodes[currentLang] || 'gu-IN';
-
-        recognition.onstart = function () {
-          isListening = true;
-          document.getElementById('dashMicRing').classList.remove('hidden');
-          document.getElementById('dashMicState').textContent = i18n[currentLang].micListening;
-          document.getElementById('dashMicBtn').classList.add('from-rose-600', 'to-red-500');
-          document.getElementById('dashMicIcon').className = 'fa-solid fa-microphone-slash';
-        };
-
-        recognition.onresult = function (event) {
-          let transcript = '';
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
-            transcript += event.results[i][0].transcript;
-          }
-          const queryInput = document.getElementById('dashQueryInput');
-          if (queryInput) {
-            queryInput.value = transcript;
-          }
-        };
-
-        recognition.onerror = function (event) {
-          stopListening();
-          showToast('અવાજ ઓળખવામાં મુશ્કેલી પડી. કૃપા કરીને ટાઈપ કરો.', 'info');
-        };
-
-        recognition.onend = function () {
-          stopListening();
-          const q = document.getElementById('dashQueryInput').value.trim();
-          if (q.length > 5) {
-            analyzeQuery(q);
-          }
-        };
-      }
-
-      function startListening() {
-        if (!recognition) initSpeechRecognition();
-        if (recognition) {
-          const langCodes = { gu: 'gu-IN', hi: 'hi-IN', en: 'en-US' };
-          recognition.lang = langCodes[currentLang] || 'gu-IN';
-          try {
-            recognition.start();
-          } catch (e) {
-            console.warn(e);
-          }
-        }
-      }
-
-      function stopListening() {
-        isListening = false;
-        document.getElementById('dashMicRing').classList.add('hidden');
-        document.getElementById('dashMicState').textContent = i18n[currentLang].micIdle;
-        document.getElementById('dashMicBtn').classList.remove('from-rose-600', 'to-red-500');
-        document.getElementById('dashMicIcon').className = 'fa-solid fa-microphone';
-        if (recognition) {
-          try { recognition.stop(); } catch (e) {}
-        }
-      }
-
-      // Query Analysis Engine
-      function analyzeQuery(query) {
-        if (!query || query.trim() === '') {
-          showToast('કૃપા કરીને તમારી સમસ્યા લખો અથવા બોલો.', 'error');
-          return;
-        }
-
-        stopSpeaking();
-        const loading = document.getElementById('dashAiLoading');
-        const resCard = document.getElementById('dashResultCard');
-
-        loading.classList.remove('hidden');
-        resCard.classList.add('hidden');
-
-        setTimeout(() => {
-          loading.classList.add('hidden');
-          const lowerQuery = query.toLowerCase();
-          let matchedItem = null;
-          let highestScore = 0;
-
-          legalDatabase.forEach(item => {
-            let score = 0;
-            item.keywords.forEach(kw => {
-              if (lowerQuery.includes(kw.toLowerCase())) {
-                score += 1;
-              }
-            });
-            if (score > highestScore) {
-              highestScore = score;
-              matchedItem = item;
-            }
-          });
-
-          if (!matchedItem) {
-            matchedItem = legalDatabase.find(x => x.id === 'legal_aid');
-          }
-
-          currentResultData = matchedItem;
-          renderAnalysisResult(matchedItem);
-        }, 500);
-      }
-
-      function renderAnalysisResult(item) {
-        const resCard = document.getElementById('dashResultCard');
-        const lang = currentLang;
-
-        document.getElementById('resBadgeCategory').textContent = item.category[lang] || item.category['gu'];
-        const summaryText = item.summary[lang] || item.summary['gu'];
-        document.getElementById('resSummaryText').textContent = summaryText;
-
-        const stepsList = document.getElementById('resStepsList');
-        stepsList.innerHTML = '';
-        const steps = item.steps[lang] || item.steps['gu'];
-        steps.forEach(st => {
-          const li = document.createElement('li');
-          li.textContent = st;
-          stepsList.appendChild(li);
-        });
-
-        document.getElementById('resAuthorityText').textContent = item.authority[lang] || item.authority['gu'];
-        document.getElementById('resHelplineText').textContent = item.helpline;
-
-        const docsList = document.getElementById('resDocsList');
-        docsList.innerHTML = '';
-        const docs = item.docs[lang] || item.docs['gu'];
-        docs.forEach(d => {
-          const li = document.createElement('li');
-          li.className = 'flex items-center gap-1.5 bg-nyay-950/70 p-2 rounded-lg border border-slate-800';
-          li.innerHTML = `<i class="fa-solid fa-file-circle-check text-emerald-400 text-xs"></i> <span>${d}</span>`;
-          docsList.appendChild(li);
-        });
-
-        document.getElementById('resPortalAnchor').href = item.portalUrl;
-
-        resCard.classList.remove('hidden');
-        resCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-        if (ttsEnabled) {
-          const audioText = `${item.category[lang]}. ${summaryText}`;
-          speakText(text);
-        }
-      }
-
-      // Application Drafter: Update Preview Sheet
-      function updateDraftPreview() {
-        const authority = document.getElementById('inputDrafterAuthority').value.trim() || '[સંબંધિત કચેરીનું નામ / હોદ્દો]';
-        const name = document.getElementById('inputDrafterName').value.trim() || userName;
-        const phone = document.getElementById('inputDrafterPhone').value.trim() || '[મોબાઇલ નંબર]';
-        const address = document.getElementById('inputDrafterAddress').value.trim() || '[સરનામું]';
-        const subject = document.getElementById('inputDrafterSubject').value.trim() || '[અરજીનો વિષય]';
-        const body = document.getElementById('inputDrafterBody').value.trim() || 'સવિનય ઉપરોક્ત વિષયના સંદર્ભમાં રજૂઆત કરવાની કે...';
-        const prayer = document.getElementById('inputDrafterPrayer').value.trim() || 'આ બાબતે સત્વરે યોગ્ય તપાસ કરી ઘટતી કાનૂની કાર્યવાહી કરવા વિનંતી.';
-
-        document.getElementById('sheetAuthority').textContent = authority;
-        document.getElementById('sheetName').textContent = name;
-        document.getElementById('sheetPhone').textContent = phone;
-        document.getElementById('sheetAddress').textContent = address;
-        document.getElementById('sheetSubject').textContent = subject;
-        document.getElementById('sheetBody').textContent = body;
-        document.getElementById('sheetPrayer').textContent = prayer;
-        document.getElementById('sheetSignName').textContent = name;
-
-        const now = new Date();
-        const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-        document.getElementById('sheetDate').textContent = dateStr;
-      }
-
-      // Screen & Section Switching
-      function showLandingScreen() {
-        document.getElementById('screenLanding').classList.remove('hidden');
-        document.getElementById('screenDashboard').classList.add('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      function showDashboardScreen(targetSection = 'assistant') {
-        document.getElementById('screenLanding').classList.add('hidden');
-        document.getElementById('screenDashboard').classList.remove('hidden');
-        switchDashboardSection(targetSection);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      function switchDashboardSection(sectionName) {
-        const sections = document.querySelectorAll('.dash-section');
-        sections.forEach(s => s.classList.add('hidden'));
-
-        const tabs = document.querySelectorAll('.dash-tab-btn');
-        tabs.forEach(t => {
-          t.classList.remove('bg-gold-500', 'text-slate-950');
-          t.classList.add('bg-slate-800/80', 'text-slate-300');
-        });
-
-        const sectionMap = {
-          assistant: { el: 'dashSectionAssistant', btn: 'dashTabAssistant' },
-          drafter: { el: 'dashSectionDrafter', btn: 'dashTabDrafter' },
-          library: { el: 'dashSectionLibrary', btn: 'dashTabLibrary' },
-          portals: { el: 'dashSectionPortals', btn: 'dashTabPortals' }
-        };
-
-        const target = sectionMap[sectionName] || sectionMap.assistant;
-        const targetEl = document.getElementById(target.el);
-        const targetBtn = document.getElementById(target.btn);
-
-        if (targetEl) targetEl.classList.remove('hidden');
-        if (targetBtn) {
-          targetBtn.classList.add('bg-gold-500', 'text-slate-950');
-          targetBtn.classList.remove('bg-slate-800/80', 'text-slate-300');
-        }
-
-        if (sectionName === 'drafter') {
-          updateDraftPreview();
-        }
-      }
-
-      // Safe Clipboard Copy Helper
-      function copyToClipboard(text, successMsg) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text)
-            .then(() => showToast(successMsg, 'success'))
-            .catch(() => fallbackCopy(text, successMsg));
-        } else {
-          fallbackCopy(text, successMsg);
-        }
-      }
-
-      function fallbackCopy(text, successMsg) {
-        try {
-          const textarea = document.createElement('textarea');
-          textarea.value = text;
-          textarea.style.position = 'fixed';
-          textarea.style.top = '0';
-          textarea.style.left = '0';
-          textarea.style.opacity = '0';
-          document.body.appendChild(textarea);
-          textarea.focus();
-          textarea.select();
-          const successful = document.execCommand('copy');
-          document.body.removeChild(textarea);
-          if (successful) {
-            showToast(successMsg, 'success');
-          } else {
-            showToast('કોપી થઈ શક્યું નથી.', 'error');
-          }
-        } catch (err) {
-          showToast('કોપી નિષ્ફળ ગઈ.', 'error');
-        }
-      }
-
-      // Apply Complete Language Localization
-      function setLanguage(lang) {
-        currentLang = lang;
-        const dict = i18n[lang] || i18n['gu'];
-
-        document.getElementById('navSubBadge').textContent = dict.navSubBadge;
-        document.getElementById('currentLangLabel').textContent = dict.currentLangLabel;
-        document.getElementById('navHomeText').textContent = dict.navHomeText;
-        document.getElementById('topMottoText').innerHTML = `<i class="fa-solid fa-star text-gold-400 text-[10px]"></i><span>${dict.topMotto}</span><i class="fa-solid fa-star text-gold-400 text-[10px]"></i>`;
-
-        document.getElementById('heroWelcomePrefix').textContent = dict.heroWelcomePrefix;
-        document.getElementById('heroGujaratiHeadline').textContent = dict.heroGujaratiHeadline;
-        document.getElementById('heroDescription').textContent = dict.heroDescription;
-        document.getElementById('scalesCardTitle').textContent = dict.scalesTitle;
-        document.getElementById('scalesCardSub').textContent = dict.scalesSub;
-        document.getElementById('constCardTitle').textContent = dict.constTitle;
-        document.getElementById('constCardSub').textContent = dict.constSub;
-
-        document.getElementById('btnTextGetStarted').textContent = dict.btnGetStarted;
-        document.getElementById('btnTextSelectLang').textContent = dict.btnSelectLang;
-        document.getElementById('btnTextDemoLogin').textContent = dict.btnDemoLogin;
-
-        document.getElementById('card1Badge').textContent = dict.card1Badge;
-        document.getElementById('card1Title').textContent = dict.card1Title;
-        document.getElementById('card1Desc').textContent = dict.card1Desc;
-        document.getElementById('card2Badge').textContent = dict.card2Badge;
-        document.getElementById('card2Title').textContent = dict.card2Title;
-        document.getElementById('card2Desc').textContent = dict.card2Desc;
-        document.getElementById('card3Badge').textContent = dict.card3Badge;
-        document.getElementById('card3Title').textContent = dict.card3Title;
-        document.getElementById('card3Desc').textContent = dict.card3Desc;
-
-        document.getElementById('landingDisclaimer').textContent = dict.landingDisclaimer;
-
-        // Dashboard text
-        document.getElementById('dashEyebrow').textContent = dict.dashEyebrow;
-        document.getElementById('dashTitle').textContent = dict.dashTitle;
-        document.getElementById('dashSub').textContent = dict.dashSub;
-
-        document.getElementById('tabTextAssistant').textContent = dict.tabAssistant;
-        document.getElementById('tabTextDrafter').textContent = dict.tabDrafter;
-        document.getElementById('tabTextLibrary').textContent = dict.tabLibrary;
-        document.getElementById('tabTextPortals').textContent = dict.tabPortals;
-
-        document.getElementById('dashMicState').textContent = isListening ? dict.micListening : dict.micIdle;
-        document.getElementById('dashMicSub').textContent = dict.micSub;
-        document.getElementById('dashQueryLabel').textContent = dict.queryLabel;
-        document.getElementById('dashQueryInput').placeholder = dict.queryPlaceholder;
-        document.getElementById('dashSubmitText').textContent = dict.btnSubmit;
-        document.getElementById('dashLoadingText').textContent = dict.loadingMsg;
-
-        document.getElementById('resSpeakText').textContent = dict.speakBtn;
-        document.getElementById('btnTextGenerateDraft').textContent = dict.btnGenDraft;
-        document.getElementById('btnTextOpenPortal').textContent = dict.btnOpenPortal;
-
-        document.getElementById('labelResultSummary').textContent = dict.labelSummary;
-        document.getElementById('labelResultSteps').textContent = dict.labelSteps;
-        document.getElementById('labelResultAuth').textContent = dict.labelAuthority;
-        document.getElementById('labelResultHelp').textContent = dict.labelHelpline;
-        document.getElementById('labelResultDocs').textContent = dict.labelDocs;
-
-        document.getElementById('quickScenariosHeading').innerHTML = `<i class="fa-solid fa-bolt text-amber-400"></i><span>${dict.quickHead}</span>`;
-        document.getElementById('quickScenariosSub').textContent = dict.quickSub;
-        document.getElementById('factTitle').textContent = dict.factTitle;
-        document.getElementById('factBody').innerHTML = dict.factBody;
-
-        // Modals
-        document.getElementById('modalLoginTitle').textContent = dict.loginTitle;
-        document.getElementById('modalLoginSub').textContent = dict.loginSub;
-        document.getElementById('btnLoginContinueText').textContent = dict.loginBtnText;
-
-        // Re-render result if visible
-        if (currentResultData) {
-          renderAnalysisResult(currentResultData);
-        }
-      }
-
-      // Event Listeners Binding
-      function setupEvents() {
-        // Nav Home Button & Logo
-        document.getElementById('navBrandBtn').addEventListener('click', showLandingScreen);
-        document.getElementById('navHomeBtn').addEventListener('click', showLandingScreen);
-
-        // Language Modal open/close
-        const modalLang = document.getElementById('modalLanguage');
-        document.getElementById('navLangBtn').addEventListener('click', () => modalLang.classList.remove('hidden'));
-        document.getElementById('landingSelectLangBtn').addEventListener('click', () => modalLang.classList.remove('hidden'));
-        document.getElementById('modalLangContinueBtn').addEventListener('click', () => modalLang.classList.add('hidden'));
-
-        // Language option buttons in modal
-        document.querySelectorAll('.lang-option-btn').forEach(btn => {
-          btn.addEventListener('click', function () {
-            document.querySelectorAll('.lang-option-btn').forEach(b => {
-              b.classList.remove('border-gold-500', 'bg-gold-500/10', 'text-white');
-              b.classList.add('border-slate-700', 'bg-slate-800', 'text-slate-300');
-            });
-            this.classList.add('border-gold-500', 'bg-gold-500/10', 'text-white');
-            this.classList.remove('border-slate-700', 'bg-slate-800', 'text-slate-300');
-            const selectedLang = this.getAttribute('data-lang');
-            setLanguage(selectedLang);
-          });
-        });
-
-        // Demo Login Modal open/close
-        const modalLogin = document.getElementById('modalDemoLogin');
-        document.getElementById('landingDemoLoginBtn').addEventListener('click', () => modalLogin.classList.remove('hidden'));
-        document.getElementById('modalLoginBackBtn').addEventListener('click', () => modalLogin.classList.add('hidden'));
-
-        document.getElementById('modalLoginContinueBtn').addEventListener('click', function () {
-          const val = document.getElementById('inputUserName').value.trim();
-          if (val) {
-            userName = val;
-            document.getElementById('navUserName').textContent = `Welcome, ${userName}`;
-            document.getElementById('inputDrafterName').value = userName;
-            updateDraftPreview();
-          }
-          modalLogin.classList.add('hidden');
-          showDashboardScreen('assistant');
-          showToast(`સ્વાગત છે, ${userName}!`, 'success');
-        });
-
-        // Landing Get Started Button
-        document.getElementById('landingGetStartedBtn').addEventListener('click', () => showDashboardScreen('assistant'));
-
-        // Feature cards on landing screen
-        document.querySelectorAll('.quick-feature-card').forEach(card => {
-          card.addEventListener('click', function () {
-            const action = this.getAttribute('data-action');
-            if (action === 'voice') {
-              showDashboardScreen('assistant');
-              setTimeout(startListening, 400);
-            } else if (action === 'text') {
-              showDashboardScreen('assistant');
-              document.getElementById('dashQueryInput').focus();
-            } else if (action === 'library') {
-              showDashboardScreen('library');
-            }
-          });
-        });
-
-        // Dashboard Tabs
-        document.getElementById('dashTabAssistant').addEventListener('click', () => switchDashboardSection('assistant'));
-        document.getElementById('dashTabDrafter').addEventListener('click', () => switchDashboardSection('drafter'));
-        document.getElementById('dashTabLibrary').addEventListener('click', () => switchDashboardSection('library'));
-        document.getElementById('dashTabPortals').addEventListener('click', () => switchDashboardSection('portals'));
-
-        // Audio TTS Toggle
-        document.getElementById('navTtsToggleBtn').addEventListener('click', function () {
-          ttsEnabled = !ttsEnabled;
-          const icon = document.getElementById('navTtsIcon');
-          if (ttsEnabled) {
-            icon.className = 'fa-solid fa-volume-high text-xs sm:text-sm text-gold-400';
-            showToast('ઑડિયો સ્પીચ ચાલુ કરી (TTS On)', 'success');
-          } else {
-            icon.className = 'fa-solid fa-volume-xmark text-xs sm:text-sm text-slate-500';
-            stopSpeaking();
-            showToast('ઑડિયો સ્પીચ બંધ કરી (TTS Muted)', 'info');
-          }
-        });
-
-        // Voice Mic Button
-        document.getElementById('dashMicBtn').addEventListener('click', function () {
-          if (!isListening) {
-            startListening();
-          } else {
-            stopListening();
-          }
-        });
-
-        // Clear query input
-        document.getElementById('dashClearInputBtn').addEventListener('click', function () {
-          document.getElementById('dashQueryInput').value = '';
-          stopSpeaking();
-        });
-
-        // Submit query button
-        document.getElementById('dashSubmitBtn').addEventListener('click', function () {
-          const val = document.getElementById('dashQueryInput').value.trim();
-          analyzeQuery(val);
-        });
-
-        // Enter key in textarea
-        document.getElementById('dashQueryInput').addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            const val = this.value.trim();
-            analyzeQuery(val);
-          }
-        });
-
-        // Quick Scenario buttons
-        document.querySelectorAll('.quick-scenario-btn').forEach(btn => {
-          btn.addEventListener('click', function () {
-            const q = this.getAttribute('data-query');
-            document.getElementById('dashQueryInput').value = q;
-            analyzeQuery(q);
-          });
-        });
-
-        // Speak result button
-        document.getElementById('resSpeakBtn').addEventListener('click', function () {
-          if (window.speechSynthesis && window.speechSynthesis.speaking) {
-            stopSpeaking();
-          } else if (currentResultData) {
-            const lang = currentLang;
-            const text = `${currentResultData.category[lang]}. ${currentResultData.summary[lang]}`;
-            speakText(text);
-          }
-        });
-
-        // Copy result button
-        document.getElementById('resCopyBtn').addEventListener('click', function () {
-          if (!currentResultData) return;
-          const lang = currentLang;
-          const cat = currentResultData.category[lang] || '';
-          const sum = currentResultData.summary[lang] || '';
-          const steps = (currentResultData.steps[lang] || []).map((s, i) => `${i + 1}. ${s}`).join('\n');
-          const full = `【NYAYMITRA-AI】\nશ્રેણી: ${cat}\n\nસારાંશ: ${sum}\n\nપગલાં:\n${steps}\n\nકચેરી: ${currentResultData.authority[lang]}\nહેલ્પલાઇન: ${currentResultData.helpline}`;
-          copyToClipboard(full, 'માર્ગદર્શન માહિતી કોપી થઈ ગઈ!');
-        });
-
-        // Send to Drafter button
-        document.getElementById('resSendToDrafterBtn').addEventListener('click', function () {
-          if (!currentResultData) return;
-          const tmpl = currentResultData.draftTemplate;
-          if (tmpl) {
-            document.getElementById('inputDrafterSubject').value = tmpl.subject || '';
-            document.getElementById('inputDrafterBody').value = tmpl.body || '';
-            document.getElementById('inputDrafterPrayer').value = tmpl.prayer || '';
-            document.getElementById('inputDrafterAuthority').value = tmpl.authority || '';
-            updateDraftPreview();
-          }
-          switchDashboardSection('drafter');
-          showToast('કેસની વિગતો સાથે અરજી પત્રક તૈયાર કરવામાં આવ્યું છે!', 'success');
-        });
-
-        // Drafter inputs
-        ['inputDrafterAuthority', 'inputDrafterName', 'inputDrafterPhone', 'inputDrafterAddress', 'inputDrafterSubject', 'inputDrafterBody', 'inputDrafterPrayer'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.addEventListener('input', updateDraftPreview);
-        });
-
-        document.getElementById('btnDrafterUpdate').addEventListener('click', function () {
-          updateDraftPreview();
-          showToast('ડ્રાફ્ટ સફળતાપૂર્વક અપડેટ થયો!', 'success');
-        });
-
-        // Fill sample draft
-        document.getElementById('btnDrafterFillSample').addEventListener('click', function () {
-          document.getElementById('inputDrafterAuthority').value = 'માનનીય મામલતદાર સાહેબશ્રી, તાલુકા કચેરી, ખાંભા, જિ. અમરેલી';
-          document.getElementById('inputDrafterName').value = 'દિવ્યેશ બંભણીયા';
-          document.getElementById('inputDrafterPhone').value = '9876543210';
-          document.getElementById('inputDrafterAddress').value = 'ગામ: ધૂંધવાણા, તા. ખાંભા, જિલ્લો: અમરેલી, ગુજરાત';
-          document.getElementById('inputDrafterSubject').value = 'મોજે ધૂંધવાણા ના સરવે નંબર ૫૨ ની જમીન હદ માપણી કરી નિશાન કાયમ કરવા બાબત';
-          document.getElementById('inputDrafterBody').value = 'સવિનય ઉપરોક્ત વિષયે જણાવવાનું કે, હું અરજદાર ઉપરોક્ત સરનામે રહું છું અને ખેતીવાડી ધરાવું છું. મારી માલિકીની સરવે નંબર ૫૨ વાળી જમીનની પશ્ચિમ દિશાએ આવેલ ખેતરના ખાતેદાર સાથે સીમા બાબતે મતભેદ ઉપસ્થિત થયેલ હોવાથી સરકારી સર્વેયર દ્વારા સ્થળ પર આવી કાયદેસર માપણી કરવામાં આવે તે જરૂરી છે.';
-          document.getElementById('inputDrafterPrayer').value = 'આ બાબતે સત્વરે DILR કચેરી મારફત સ્થળ માપણી કરાવી યોગ્ય હદ નિશાન નક્કી કરી આપવા હુકમ કરવા નમ્ર વિનંતી છે.';
-          updateDraftPreview();
-          showToast('નમૂનારૂપ અરજી દાખલ કરવામાં આવી!', 'info');
-        });
-
-        // Reset draft
-        document.getElementById('btnDrafterReset').addEventListener('click', function () {
-          ['inputDrafterAuthority', 'inputDrafterName', 'inputDrafterPhone', 'inputDrafterAddress', 'inputDrafterSubject', 'inputDrafterBody', 'inputDrafterPrayer'].forEach(id => {
-            document.getElementById(id).value = '';
-          });
-          updateDraftPreview();
-          showToast('ડ્રાફ્ટ ખાલી કર્યો.', 'info');
-        });
-
-        // Copy draft sheet
-        document.getElementById('btnDrafterCopy').addEventListener('click', function () {
-          const sheet = document.getElementById('drafterPrintSheet');
-          if (sheet) {
-            copyToClipboard(sheet.innerText, 'અરજી પત્રક ક્લિપબોર્ડ પર કોપી થઈ ગયું!');
-          }
-        });
-
-        // Print draft sheet
-        document.getElementById('btnDrafterPrint').addEventListener('click', function () {
-          window.print();
-        });
-      }
-
-      // Initializer
-      document.addEventListener('DOMContentLoaded', function () {
-        setupEvents();
-        updateDraftPreview();
-        initSpeechRecognition();
-      });
-
-    })();
-  </script>
+</section>
+
+<script>
+const API = window.location.origin;
+let selectedLanguage = localStorage.getItem("nyaymitra_language") || "gu";
+let currentRecognition = null;
+let lastAnswer = "";
+
+const translations = {
+ gu: {
+  select:"તમારી ભાષા પસંદ કરો", cont:"આગળ વધો →",
+  preferred:"તમારી પસંદગીની ભાષા પસંદ કરો",
+  notice:"આ એક સ્વતંત્ર વિદ્યાર્થી નવીનતા છે. સત્તાવાર સરકારી પોર્ટલ નથી.",
+  tagline:"તમારો અવાજ મહત્વનો છે, તમારા અધિકારો પણ.",
+  desc:"તમારી ભાષામાં માહિતી મેળવો અને યોગ્ય સહાય સુધી પહોંચો.",
+  start:"શરૂ કરો →", login:"ડેમો લોગિન",
+  profile:"તમારું સ્વાગત છે", profileDesc:"ડેમો માટે તમારું નામ લખો.",
+  name:"તમારું નામ", enter:"ડેશબોર્ડ પર જાઓ →", back:"← પાછા જાઓ",
+  demoNotice:"આ ડેમો પ્રોફાઇલ છે, સુરક્ષિત એકાઉન્ટ નથી.",
+  dashboard:"તમારી મદદ માટે અમે અહીં છીએ.",
+  sub:"માહિતી મેળવો, યોગ્ય સેવા શોધો અને આગળનું પગલું સમજો.",
+  voice:"વોઇસ સહાયક", voiceDesc:"તમારો પ્રશ્ન બોલીને પૂછો.",
+  text:"ટેક્સ્ટ સહાયક", textDesc:"લખીને કાનૂની માહિતી શોધો.",
+  library:"બંધારણ લાઇબ્રેરી", libraryDesc:"ભારતીય બંધારણના ઉપલબ્ધ અનુચ્છેદો શોધો.",
+  openVoice:"વોઇસ સહાયક ખોલો", openText:"ટેક્સ્ટ સહાયક ખોલો",
+  openLibrary:"લાઇબ્રેરી ખોલો", language:"ભાષા બદલો", home:"મુખ્ય પાનું",
+  voiceHelp:"માઇક્રોફોનથી પ્રશ્ન બોલો. બ્રાઉઝર સપોર્ટ જરૂરી છે.",
+  voicePlaceholder:"તમારો પ્રશ્ન અહીં દેખાશે...",
+  listen:"🎙️ સાંભળવાનું શરૂ કરો", searchQuestion:"પ્રશ્ન શોધો",
+  readAnswer:"🔊 જવાબ સાંભળો", textHelp:"બંધારણમાં ઉપલબ્ધ માહિતી શોધો.",
+  questionPlaceholder:"તમારો પ્રશ્ન અહીં લખો...",
+  search:"શોધો", parts:"ભાગો", articles:"અનુચ્છેદો",
+  selectPart:"એક ભાગ પસંદ કરો.", articleDetails:"અનુચ્છેદની વિગતો",
+  selectArticle:"એક અનુચ્છેદ પસંદ કરો.",
+  searchConstitution:"બંધારણમાં શોધો",
+  searchPlaceholder:"શબ્દ અથવા અનુચ્છેદ નંબર શોધો",
+  loading:"લોડ થઈ રહ્યું છે...", searching:"શોધ ચાલુ છે...",
+  noParts:"કોઈ ભાગ મળ્યો નથી.",
+  noArticles:"આ ભાગમાં કોઈ અનુચ્છેદ મળ્યો નથી.",
+  noResults:"મેળ ખાતા પરિણામો મળ્યાં નથી.",
+  libraryError:"લાઇબ્રેરીમાં ભૂલ આવી:",
+  articleError:"અનુચ્છેદ લોડ કરવામાં ભૂલ:",
+  searchError:"શોધમાં ભૂલ આવી:",
+  enterName:"કૃપા કરીને તમારું નામ લખો.",
+  enterQuestion:"કૃપા કરીને તમારો પ્રશ્ન લખો.",
+  speakFirst:"પહેલા તમારો પ્રશ્ન બોલો અથવા લખો.",
+  searchFirst:"પહેલા પ્રશ્ન શોધો.",
+  speechUnsupported:"આ બ્રાઉઝરમાં અવાજ ઓળખવાની સુવિધા ઉપલબ્ધ નથી. પ્રશ્ન લખીને પ્રયાસ કરો.",
+  ttsUnsupported:"આ બ્રાઉઝરમાં જવાબ વાંચવાની સુવિધા ઉપલબ્ધ નથી.",
+  languageError:"ભાષા પસંદ કરવામાં ભૂલ:",
+  serverCheck:"સર્વર ચાલુ છે કે નહીં તે તપાસો.",
+  legalNotice:"આ માહિતી સામાન્ય જાગૃતિ માટે છે, કાનૂની સલાહ નથી. વર્તમાન કાયદા માટે સત્તાવાર સ્ત્રોત અથવા યોગ્ય કાનૂની નિષ્ણાતની સલાહ લો.",
+  article:"અનુચ્છેદ", openArticle:"અનુચ્છેદ ખોલો",
+  originalSource:"મૂળ સ્ત્રોત", explanation:"સરળ સમજૂતી",
+  assistant:"સહાયક", created:"🇮🇳 નિર્માતા: દિવ્યેશ બામ્ભણિયા",
+  independent:"⚖️ ભારતમાં ન્યાય સુધી પહોંચવા માટેની સ્વતંત્ર વિદ્યાર્થી નવીનતા",
+  notificationsTitle:"🔔 સૂચનાઓ",
+  notificationsDesc:"તમને કયા અપડેટ્સ મેળવવા છે તે પસંદ કરો.",
+  pushEnable:"મોબાઇલ પર સૂચનાઓ ચાલુ કરો",
+  pushUnsupported:"આ બ્રાઉઝરમાં Push સૂચનાઓ ઉપલબ્ધ નથી.",
+  pushPermissionDenied:"સૂચનાઓ માટે Browser Permission મંજૂર કરો.",
+  pushEnabled:"મોબાઇલ Push સૂચનાઓ ચાલુ થઈ ગઈ છે.",
+  pushError:"Push સૂચનાઓ ચાલુ થઈ શકી નથી. ફરી પ્રયાસ કરો.",
+  legalUpdates:"મહત્વપૂર્ણ કાનૂની અપડેટ્સ",
+  legalUpdatesDesc:"મહત્વપૂર્ણ કાનૂની માહિતી અને અપડેટ્સ.",
+  applicationStatus:"ફરિયાદ અને અરજીની સ્થિતિ",
+  applicationStatusDesc:"તમારી ફરિયાદ અથવા અરજીના નવા અપડેટ્સ.",
+  systemUpdates:"સિસ્ટમ અપડેટ્સ",
+  systemUpdatesDesc:"NYAYMITRA-AI સિસ્ટમના મહત્વપૂર્ણ અપડેટ્સ.",
+  future4:"આગામી સુવિધા 4", future4Desc:"ભવિષ્યની સુવિધા માટે અનામત.",
+  future5:"આગામી સુવિધા 5", future5Desc:"ભવિષ્યની સુવિધા માટે અનામત.",
+  notificationSaved:"સૂચનાની પસંદગી સાચવાઈ ગઈ.",
+  notificationError:"સૂચના સેટિંગ સાચવી શકાયું નથી.",
+  rights:"તમારા અધિકારો. તમારો અવાજ."
+ },
+ hi: {
+  select:"अपनी भाषा चुनें", cont:"आगे बढ़ें →",
+  preferred:"अपनी पसंदीदा भाषा चुनें",
+  notice:"यह एक स्वतंत्र छात्र नवाचार है। यह आधिकारिक सरकारी पोर्टल नहीं है।",
+  tagline:"आपकी आवाज़ महत्वपूर्ण है, आपके अधिकार भी।",
+  desc:"अपनी भाषा में जानकारी पाएं और उचित सहायता तक पहुंचें।",
+  start:"शुरू करें →", login:"डेमो लॉगिन",
+  profile:"आपका स्वागत है", profileDesc:"डेमो के लिए अपना नाम लिखें।",
+  name:"आपका नाम", enter:"डैशबोर्ड पर जाएं →", back:"← वापस जाएं",
+  demoNotice:"यह डेमो प्रोफ़ाइल है, सुरक्षित अकाउंट नहीं।",
+  dashboard:"हम आपकी सहायता के लिए यहां हैं।",
+  sub:"जानकारी पाएं, उचित सेवा खोजें और अगला कदम समझें।",
+  voice:"आवाज़ सहायक", voiceDesc:"अपना प्रश्न बोलकर पूछें।",
+  text:"टेक्स्ट सहायक", textDesc:"लिखकर कानूनी जानकारी खोजें।",
+  library:"संविधान पुस्तकालय", libraryDesc:"भारतीय संविधान के उपलब्ध अनुच्छेद खोजें।",
+  openVoice:"आवाज़ सहायक खोलें", openText:"टेक्स्ट सहायक खोलें",
+  openLibrary:"पुस्तकालय खोलें", language:"भाषा बदलें", home:"मुख्य पृष्ठ",
+  voiceHelp:"माइक्रोफ़ोन से प्रश्न बोलें। ब्राउज़र सपोर्ट आवश्यक है।",
+  voicePlaceholder:"आपका प्रश्न यहां दिखाई देगा...",
+  listen:"🎙️ सुनना शुरू करें", searchQuestion:"प्रश्न खोजें",
+  readAnswer:"🔊 जवाब सुनें", textHelp:"संविधान में उपलब्ध जानकारी खोजें।",
+  questionPlaceholder:"अपना प्रश्न यहां लिखें...",
+  search:"खोजें", parts:"भाग", articles:"अनुच्छेद",
+  selectPart:"एक भाग चुनें।", articleDetails:"अनुच्छेद का विवरण",
+  selectArticle:"एक अनुच्छेद चुनें।",
+  searchConstitution:"संविधान में खोजें",
+  searchPlaceholder:"शब्द या अनुच्छेद संख्या खोजें",
+  loading:"लोड हो रहा है...", searching:"खोज जारी है...",
+  noParts:"कोई भाग नहीं मिला।",
+  noArticles:"इस भाग में कोई अनुच्छेद नहीं मिला।",
+  noResults:"कोई मिलते-जुलते परिणाम नहीं मिले।",
+  libraryError:"पुस्तकालय में त्रुटि:",
+  articleError:"अनुच्छेद लोड करने में त्रुटि:",
+  searchError:"खोज में त्रुटि:",
+  enterName:"कृपया अपना नाम लिखें।",
+  enterQuestion:"कृपया अपना प्रश्न लिखें।",
+  speakFirst:"पहले अपना प्रश्न बोलें या लिखें।",
+  searchFirst:"पहले प्रश्न खोजें।",
+  speechUnsupported:"इस ब्राउज़र में आवाज़ पहचानने की सुविधा उपलब्ध नहीं है। प्रश्न लिखकर प्रयास करें।",
+  ttsUnsupported:"इस ब्राउज़र में जवाब पढ़ने की सुविधा उपलब्ध नहीं है।",
+  languageError:"भाषा चुनने में त्रुटि:",
+  serverCheck:"जांचें कि सर्वर चालू है या नहीं।",
+  legalNotice:"यह जानकारी केवल सामान्य जागरूकता के लिए है, कानूनी सलाह नहीं। वर्तमान कानून के लिए आधिकारिक स्रोत या योग्य कानूनी विशेषज्ञ से सलाह लें।",
+  article:"अनुच्छेद", openArticle:"अनुच्छेद खोलें",
+  originalSource:"मूल स्रोत", explanation:"सरल व्याख्या",
+  assistant:"सहायक", created:"🇮🇳 निर्माता: दिव्येश बाम्भणिया",
+  independent:"⚖️ भारत में न्याय तक पहुंच के लिए स्वतंत्र छात्र नवाचार",
+  notificationsTitle:"🔔 सूचनाएँ",
+  notificationsDesc:"चुनें कि आप कौन-से अपडेट पाना चाहते हैं।",
+  pushEnable:"मोबाइल पर सूचनाएँ चालू करें",
+  pushUnsupported:"इस ब्राउज़र में Push सूचनाएँ उपलब्ध नहीं हैं।",
+  pushPermissionDenied:"सूचनाओं के लिए Browser Permission दें।",
+  pushEnabled:"मोबाइल Push सूचनाएँ चालू हो गई हैं।",
+  pushError:"Push सूचनाएँ चालू नहीं हो सकीं। फिर कोशिश करें।",
+  legalUpdates:"महत्वपूर्ण कानूनी अपडेट",
+  legalUpdatesDesc:"महत्वपूर्ण कानूनी जानकारी और अपडेट।",
+  applicationStatus:"शिकायत और आवेदन की स्थिति",
+  applicationStatusDesc:"आपकी शिकायत या आवेदन के नए अपडेट।",
+  systemUpdates:"सिस्टम अपडेट",
+  systemUpdatesDesc:"NYAYMITRA-AI सिस्टम के महत्वपूर्ण अपडेट।",
+  future4:"आगामी सुविधा 4", future4Desc:"भविष्य की सुविधा के लिए आरक्षित।",
+  future5:"आगामी सुविधा 5", future5Desc:"भविष्य की सुविधा के लिए आरक्षित।",
+  notificationSaved:"सूचना की पसंद सहेज ली गई।",
+  notificationError:"सूचना सेटिंग सहेजी नहीं जा सकी।",
+  rights:"आपके अधिकार। आपकी आवाज़।"
+ },
+ en: {
+  select:"Select your language", cont:"Continue →",
+  preferred:"Choose your preferred language",
+  notice:"An independent student innovation. Not an official government portal.",
+  tagline:"Your voice matters. So do your rights.",
+  desc:"Access information in your language and find the right support.",
+  start:"Get Started →", login:"Demo Login",
+  profile:"Welcome", profileDesc:"Enter your name for this demo.",
+  name:"Your name", enter:"Continue to Dashboard →", back:"← Back",
+  demoNotice:"This is a demo profile, not secure account authentication.",
+  dashboard:"We are here to help.",
+  sub:"Explore information, find services and understand possible next steps.",
+  voice:"Voice Assistant", voiceDesc:"Ask your question by speaking.",
+  text:"Text Assistant", textDesc:"Search legal information by typing.",
+  library:"Constitution Library", libraryDesc:"Explore available Articles of the Indian Constitution.",
+  openVoice:"Open Voice Assistant", openText:"Open Text Assistant",
+  openLibrary:"Open Library", language:"Change Language", home:"Home",
+  voiceHelp:"Speak into the microphone. Browser support is required.",
+  voicePlaceholder:"Your question will appear here...",
+  listen:"🎙️ Start Listening", searchQuestion:"Search Question",
+  readAnswer:"🔊 Read Answer", textHelp:"Search information available in the Constitution.",
+  questionPlaceholder:"Type your question here...",
+  search:"Search", parts:"Parts", articles:"Articles",
+  selectPart:"Select a Part.", articleDetails:"Article Details",
+  selectArticle:"Select an Article.",
+  searchConstitution:"Search Constitution",
+  searchPlaceholder:"Search keyword or Article number",
+  loading:"Loading...", searching:"Searching...",
+  noParts:"No Parts found.",
+  noArticles:"No Articles found for this Part.",
+  noResults:"No matching results found.",
+  libraryError:"Library error:",
+  articleError:"Article loading error:",
+  searchError:"Search error:",
+  enterName:"Please enter your name.",
+  enterQuestion:"Please enter your question.",
+  speakFirst:"Please speak or type your question first.",
+  searchFirst:"Search a question first.",
+  speechUnsupported:"Speech recognition is not supported in this browser. Please type your question.",
+  ttsUnsupported:"Text-to-Speech is not supported in this browser.",
+  languageError:"Language selection error:",
+  serverCheck:"Please check whether the server is running.",
+  legalNotice:"This information is for general awareness only. It is not legal advice. Verify current law with official sources or a qualified legal professional.",
+  article:"Article", openArticle:"Open Article",
+  originalSource:"Original Source", explanation:"Simple Explanation",
+  assistant:"Assistant", created:"🇮🇳 Created by Divyesh Bambhaniya",
+  independent:"⚖️ An Independent Student Innovation for Access to Justice in India",
+  notificationsTitle:"🔔 Notifications",
+  notificationsDesc:"Choose which updates you want to receive.",
+  pushEnable:"Enable mobile push notifications",
+  pushUnsupported:"Push notifications are not supported in this browser.",
+  pushPermissionDenied:"Please allow browser notification permission.",
+  pushEnabled:"Mobile push notifications are enabled.",
+  pushError:"Could not enable push notifications. Please try again.",
+  legalUpdates:"Important legal updates",
+  legalUpdatesDesc:"Important legal information and updates.",
+  applicationStatus:"Complaint and application status",
+  applicationStatusDesc:"Updates about your complaint or application.",
+  systemUpdates:"System updates",
+  systemUpdatesDesc:"Important NYAYMITRA-AI system updates.",
+  future4:"Future feature 4", future4Desc:"Reserved for a future feature.",
+  future5:"Future feature 5", future5Desc:"Reserved for a future feature.",
+  notificationSaved:"Notification preference saved.",
+  notificationError:"Could not save notification settings.",
+  rights:"YOUR RIGHTS. YOUR VOICE."
+ }
+};
+
+function showScreen(id){
+ ["languageScreen","welcomeScreen","profileScreen","appScreen"].forEach(x=>
+  document.getElementById(x).classList.toggle("hidden",x!==id));
+}
+function applyLanguage(){
+ const t = translations[selectedLanguage] || translations.gu;
+ const put = (id, value) => {
+  const el = document.getElementById(id);
+  if(el) el.textContent = value;
+ };
+ const placeholder = (id, value) => {
+  const el = document.getElementById(id);
+  if(el) el.placeholder = value;
+ };
+
+ document.documentElement.lang = selectedLanguage;
+ document.title = "NYAYMITRA-AI";
+
+ const ids = {
+  selectTitle:"select", continueBtn:"cont",
+  welcomeTagline:"tagline", welcomeDescription:"desc",
+  profileTitle:"profile", profileDesc:"profileDesc",
+  dashboardTitle:"dashboard", dashboardSub:"sub",
+  voiceTitle:"voice", voiceDesc:"voiceDesc",
+  textTitle:"text", textDesc:"textDesc",
+  libraryTitle:"library", libraryDesc:"libraryDesc",
+  notificationsTitle:"notificationsTitle",
+  notificationsDesc:"notificationsDesc",
+  notifyLegalLabel:"legalUpdates",
+  notifyApplicationLabel:"applicationStatus",
+  notifySystemLabel:"systemUpdates",
+  notifyFuture4Label:"future4",
+  notifyFuture5Label:"future5"
+ };
+ Object.entries(ids).forEach(([id,key])=>put(id,t[key]));
+
+ const buttons = {
+  startBtn:"start", welcomeLoginBtn:"login",
+  enterBtn:"enter", backWelcomeBtn:"back",
+  openVoiceBtn:"openVoice", openTextBtn:"openText",
+  openLibraryBtn:"openLibrary", changeLangBtn:"language",
+  homeBtn:"home", listenBtn:"listen",
+  voiceSearchBtn:"searchQuestion", speakBtn:"readAnswer",
+  textSearchBtn:"search", librarySearchBtn:"search",
+  enablePushBtn:"pushEnable"
+ };
+ Object.entries(buttons).forEach(([id,key])=>put(id,t[key]));
+
+ placeholder("profileName",t.name);
+ placeholder("voiceQuestion",t.voicePlaceholder);
+ placeholder("textQuestion",t.questionPlaceholder);
+ placeholder("librarySearch",t.searchPlaceholder);
+
+ const setText = (selector,value) => {
+  const el=document.querySelector(selector);
+  if(el) el.textContent=value;
+ };
+ setText("#languageScreen .muted",t.preferred);
+ setText("#languageScreen .notice",t.notice);
+ setText("#welcomeScreen .notice",t.notice);
+ setText("#profileScreen .notice",t.demoNotice);
+ setText("#appScreen .hero .brand",t.rights);
+ setText("#voicePanel h2","🎙️ "+t.voice);
+ setText("#voiceHelp",t.voiceHelp);
+ setText("#textPanel h2","💬 "+t.text);
+ setText("#textPanel p",t.textHelp);
+ setText("#libraryPanel h2","📚 "+t.library);
+ setText("#libraryPanel h3",t.parts);
+ setText("#libraryPanel .legal-notice",t.legalNotice);
+ setText("#notifyLegalDesc",t.legalUpdatesDesc);
+ setText("#notifyApplicationDesc",t.applicationStatusDesc);
+ setText("#notifySystemDesc",t.systemUpdatesDesc);
+ setText("#notifyFuture4Desc",t.future4Desc);
+ setText("#notifyFuture5Desc",t.future5Desc);
+
+ document.querySelectorAll(".lang-option").forEach(b=>{
+  b.classList.toggle("active",b.dataset.lang===selectedLanguage);
+ });
+}
+document.querySelectorAll(".lang-option").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  selectedLanguage=btn.dataset.lang;applyLanguage();
+ });
+});
+document.getElementById("continueBtn").onclick=async()=>{
+ const btn=document.getElementById("continueBtn");
+ btn.disabled=true;btn.textContent="...";
+ try{
+  const r=await fetch(API+"/language",{method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({language:selectedLanguage})});
+  const data=await r.json();
+  if(!r.ok||data.status!=="success")throw new Error(data.detail||data.message||"Language selection failed");
+  localStorage.setItem("nyaymitra_language",selectedLanguage);
+  showScreen("welcomeScreen");
+ }catch(e){alert(tr("languageError")+" "+tr("serverCheck"));}
+ finally{btn.disabled=false;applyLanguage();}
+};
+document.getElementById("startBtn").onclick=()=>showScreen("profileScreen");
+document.getElementById("welcomeLoginBtn").onclick=()=>showScreen("profileScreen");
+document.getElementById("backWelcomeBtn").onclick=()=>showScreen("welcomeScreen");
+document.getElementById("enterBtn").onclick=()=>{
+ const name=document.getElementById("profileName").value.trim();
+ if(!name){alert(tr("enterName"));return;}
+ document.getElementById("helloUser").textContent=tr("profile")+", "+name;
+ showScreen("appScreen");
+ loadNotificationSettings();
+};
+document.getElementById("homeBtn").onclick=()=>showScreen("welcomeScreen");
+document.getElementById("changeLangBtn").onclick=()=>showScreen("languageScreen");
+
+function openPanel(id){
+ ["voicePanel","textPanel","libraryPanel"].forEach(x=>
+  document.getElementById(x).classList.toggle("hidden",x!==id));
+ document.getElementById(id).scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.getElementById("openVoiceBtn").onclick=()=>openPanel("voicePanel");
+document.getElementById("openTextBtn").onclick=()=>openPanel("textPanel");
+document.getElementById("openLibraryBtn").onclick=()=>{openPanel("libraryPanel");loadParts();};
+
+
+function getNotificationUserId(){
+ let id=localStorage.getItem("nyaymitra_device_id");
+ if(!id){
+  id=(window.crypto && typeof window.crypto.randomUUID==="function")
+   ? window.crypto.randomUUID()
+   : "device-"+Date.now()+"-"+Math.random().toString(16).slice(2);
+  localStorage.setItem("nyaymitra_device_id",id);
+ }
+ return id;
+}
+
+
+const VAPID_PUBLIC_KEY = "BLTg7bJD1o8V9hln01u6HpWsubyPwxNpkhAfNT3fNpehn1Z1LR9kgrmQny0aansy06nF0nycunzhsrIwtV2E2Ts";
+
+function urlBase64ToUint8Array(value){
+ const padding="=".repeat((4-value.length%4)%4);
+ const base64=(value+padding).replace(/-/g,"+").replace(/_/g,"/");
+ const raw=window.atob(base64);
+ return Uint8Array.from(raw,c=>c.charCodeAt(0));
+}
+
+async function enablePushNotifications(){
+ const message=document.getElementById("notificationMessage");
+ const button=document.getElementById("enablePushBtn");
+
+ if(!("serviceWorker" in navigator) ||
+    !("PushManager" in window) ||
+    !("Notification" in window)){
+  message.textContent=tr("pushUnsupported");
+  return;
+ }
+
+ if(!window.isSecureContext){
+  message.textContent=tr("pushUnsupported");
+  return;
+ }
+
+ button.disabled=true;
+
+ try{
+  const permission=await Notification.requestPermission();
+
+  if(permission!=="granted"){
+   message.textContent=tr("pushPermissionDenied");
+   return;
+  }
+
+  const registration=await navigator.serviceWorker.register(
+   "/service-worker.js",
+   {scope:"/"}
+  );
+
+  await navigator.serviceWorker.ready;
+
+  let subscription=await registration.pushManager.getSubscription();
+
+  if(!subscription){
+   subscription=await registration.pushManager.subscribe({
+    userVisibleOnly:true,
+    applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+   });
+  }
+
+  const response=await fetch(API+"/notifications/subscribe",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    user_id:getNotificationUserId(),
+    ...subscription.toJSON()
+   })
+  });
+
+  const result=await response.json();
+
+  if(!response.ok){
+   throw new Error(result.detail||"Subscription save failed");
+  }
+
+  message.textContent=tr("pushEnabled");
+ }catch(error){
+  console.error("Push setup error:",error);
+  message.textContent=tr("pushError");
+ }finally{
+  button.disabled=false;
+ }
+}
+
+document.getElementById("enablePushBtn")
+ .addEventListener("click",enablePushNotifications);
+
+async function loadNotificationSettings(){
+ const message=document.getElementById("notificationMessage");
+ try{
+  const params=new URLSearchParams({
+   user_id:getNotificationUserId(),
+   language:selectedLanguage
+  });
+  const data=await apiGet("/notifications/categories?"+params.toString());
+  for(const item of (data.categories||[])){
+   const input=document.querySelector(
+    '#notificationSettings [data-category="'+item.key+'"]'
+   );
+   if(input) input.checked=!!item.enabled;
+  }
+  message.textContent="";
+ }catch(error){
+  message.textContent=tr("notificationError");
+ }
+}
+
+async function saveNotificationSetting(event){
+ const input=event.currentTarget;
+ const previous=!input.checked;
+ const message=document.getElementById("notificationMessage");
+ input.disabled=true;
+
+ try{
+  const response=await fetch(API+"/notifications/preferences",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    user_id:getNotificationUserId(),
+    category_key:input.dataset.category,
+    enabled:input.checked,
+    language:selectedLanguage
+   })
+  });
+  const data=await response.json();
+  if(!response.ok) throw new Error(data.detail||"Save failed");
+  message.textContent=data.message||tr("notificationSaved");
+ }catch(error){
+  input.checked=previous;
+  message.textContent=tr("notificationError");
+ }finally{
+  input.disabled=false;
+ }
+}
+
+document.querySelectorAll(
+ "#notificationSettings input[data-category]"
+).forEach(input=>{
+ input.addEventListener("change",saveNotificationSetting);
+});
+
+async function apiGet(path){
+ const r=await fetch(API+path);
+ const data=await r.json();
+ if(!r.ok)throw new Error(data.detail||"Request failed");
+ return data;
+}
+function escapeHTML(s){
+ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function tr(key){
+ const t=translations[selectedLanguage]||translations.gu;
+ return t[key]||"";
+}
+function scrollToElement(el){
+ if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+async function loadParts(){
+ const el=document.getElementById("partsList");
+ el.textContent=tr("loading");
+ try{
+  const data=await apiGet("/library/parts");
+  const items=data.parts||data.data||[];
+  el.innerHTML="";
+  if(!items.length){el.textContent=tr("noParts");return;}
+  items.forEach(p=>{
+   const name=typeof p==="string"?p:(p.name||p.title||p.part||JSON.stringify(p));
+   const b=document.createElement("button");
+   b.className="list-item";
+   b.textContent=name;
+   b.onclick=()=>loadArticles(p.part??p.id??p.part_number??p.number??name);
+   el.appendChild(b);
+  });
+ }catch(e){
+  console.error("Parts loading:",e);
+  el.textContent=tr("libraryError");
+ }
+}
+async function loadArticles(part){
+ const el=document.getElementById("articlesList");
+ el.textContent=tr("loading");
+ try{
+  const data=await apiGet("/library/articles?part="+encodeURIComponent(part));
+  const items=data.articles||data.data||[];
+  el.innerHTML="";
+  if(!items.length){el.textContent=tr("noArticles");scrollToElement(el);return;}
+  items.forEach(a=>{
+   const n=a.number??a.article_number??a.id;
+   const title=a.title??a.name??(tr("article")+" "+n);
+   const b=document.createElement("button");
+   b.className="list-item";
+   b.textContent=tr("article")+" "+n+" · "+title;
+   b.onclick=()=>openArticle(n);
+   el.appendChild(b);
+  });
+  scrollToElement(el);
+ }catch(e){
+  console.error("Articles loading:",e);
+  el.textContent=tr("articleError");
+ }
+}
+async function openArticle(number){
+ const el=document.getElementById("articleDetails");
+ el.textContent=tr("loading");
+ try{
+  const data=await apiGet("/library/articles/"+encodeURIComponent(number));
+  const article=data.article||data.data||data;
+  el.textContent=article.text||article.content||article.description||JSON.stringify(article,null,2);
+  scrollToElement(el);
+ }catch(e){
+  console.error("Article loading:",e);
+  el.textContent=tr("articleError");
+ }
+}
+async function searchLibrary(query,target){
+ target.textContent=tr("searching");
+ try{
+  const data=await apiGet("/library/search?q="+encodeURIComponent(query));
+  const items=data.results||data.articles||data.data||[];
+  target.innerHTML="";
+  if(!items.length){target.textContent=tr("noResults");scrollToElement(target);return;}
+  items.forEach(a=>{
+   const box=document.createElement("div");
+   box.className="result";
+   const n=a.number??a.article_number??a.id??"";
+   box.innerHTML="<strong>"+escapeHTML(a.title||(tr("article")+" "+n))+"</strong><p>"+escapeHTML(a.content||a.text||a.description||"")+"</p>";
+   if(n){
+    const b=document.createElement("button");
+    b.className="ghost-btn";
+    b.textContent=tr("openArticle")+" "+n;
+    b.onclick=()=>openArticle(n);
+    box.appendChild(b);
+   }
+   target.appendChild(box);
+  });
+  scrollToElement(target);
+ }catch(e){
+  console.error("Search:",e);
+  target.textContent=tr("searchError");
+ }
+}
+document.getElementById("librarySearchBtn").onclick=()=>{
+ const q=document.getElementById("librarySearch").value.trim();
+ if(q)searchLibrary(q,document.getElementById("libraryResults"));
+};
+document.getElementById("textSearchBtn").onclick=()=>{
+ const q=document.getElementById("textQuestion").value.trim();
+ if(!q){alert(tr("enterQuestion"));return;}
+ searchLibrary(q,document.getElementById("textResults"));
+};
+document.getElementById("listenBtn").onclick=()=>{
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){alert(tr("speechUnsupported"));return;}
+ currentRecognition=new SR();currentRecognition.lang={gu:"gu-IN",hi:"hi-IN",en:"en-IN"}[selectedLanguage];
+ currentRecognition.interimResults=false;
+ currentRecognition.onresult=e=>{
+  document.getElementById("voiceQuestion").value=e.results[0][0].transcript;
+ };
+ currentRecognition.onerror=e=>{console.error("Voice error:",e.error);alert(tr("speechUnsupported"));};
+ currentRecognition.start();
+};
+document.getElementById("voiceSearchBtn").onclick=()=>{
+ const q=document.getElementById("voiceQuestion").value.trim();
+ if(q)searchLibrary(q,document.getElementById("voiceResult"));
+ else alert(tr("speakFirst"));
+};
+document.getElementById("speakBtn").onclick=()=>{
+ const text=document.getElementById("voiceResult").innerText;
+ if(!text.trim()){alert(tr("searchFirst"));return;}
+ if(!("speechSynthesis" in window)){alert(tr("ttsUnsupported"));return;}
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang={gu:"gu-IN",hi:"hi-IN",en:"en-IN"}[selectedLanguage];
+ speechSynthesis.cancel();speechSynthesis.speak(u);
+};
+
+applyLanguage();
+showScreen("languageScreen");
+</script>
 </body>
 </html>
+
+<script>
+// Backend Integration Layer for JARVIS-AI
+async function searchLegalQuery(queryText) {
+    try {
+        const response = await fetch('/api/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: queryText })
+        });
+        const data = await response.json();
+        console.log("JARVIS Response:", data);
+        return data;
+    } catch (err) {
+        console.error("API Error:", err);
+    }
+}
+</script>
